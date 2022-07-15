@@ -1,6 +1,6 @@
 <?php
 
-namespace VendorName\Skeleton\Database\Factories;
+namespace Asciisd\Zoho\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
