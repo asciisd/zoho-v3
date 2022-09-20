@@ -1,7 +1,6 @@
 # Laravel Zoho API V3 Package
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/asciisd/zoho-v3.svg?style=flat-square)](https://packagist.org/packages/asciisd/zoho-v3)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/asciisd/zoho-v3/run-tests?label=tests)](https://github.com/asciisd/zoho-v3/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/asciisd/zoho-v3/Check%20&%20fix%20styling?label=code%20style)](https://github.com/asciisd/zoho-v3/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/asciisd/zoho-v3.svg?style=flat-square)](https://packagist.org/packages/asciisd/zoho-v3)
 
