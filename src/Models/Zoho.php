@@ -3,7 +3,13 @@
 namespace Asciisd\Zoho\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
+/**
+ * @property string zohoable_type
+ * @property int zohoable_id
+ * @property string zoho_id
+ */
 class Zoho extends Model
 {
     /**
@@ -18,7 +24,7 @@ class Zoho extends Model
     /**
      * Get the owning zohoable model.
      */
-    public function zohoable()
+    public function zohoable(): MorphTo
     {
         return $this->morphTo();
     }

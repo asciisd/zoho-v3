@@ -1,11 +1,7 @@
 {
     "name": "asciisd/zoho-v3",
     "description": "Laravel Zoho API V3 Package",
-    "keywords": [
-        "asciisd",
-        "laravel",
-        "zoho-v3"
-    ],
+    "keywords": ["asciisd", "laravel", "zoho", "crm"],
     "homepage": "https://github.com/asciisd/zoho-v3",
     "license": "MIT",
     "authors": [
@@ -19,10 +15,10 @@
         "php": "^8.1",
         "illuminate/contracts": "^9.0",
         "spatie/laravel-package-tools": "^1.9.2",
-        "zohocrm/php-sdk": "3.1.0"
+        "zohocrm/php-sdk-2.1": "4.0.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.8",
+        "friendsofphp/php-cs-fixer": "^v3.11.0",
         "nunomaduro/collision": "^6.0",
         "orchestra/testbench": "^7.0",
         "pestphp/pest": "^1.21",

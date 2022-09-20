@@ -4,12 +4,18 @@ namespace Asciisd\Zoho\Traits;
 
 use Exception;
 use Illuminate\Support\Str;
+use Asciisd\Zoho\ZohoManager;
+use com\zoho\crm\api\record\Record;
 use Asciisd\Zoho\Models\Zoho as ZohoModel;
 use Asciisd\Zoho\Exceptions\InvalidZohoable;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
+/**
+ * @property ZohoModel zoho
+ */
 trait Zohoable
 {
-    public function zoho()
+    public function zoho(): MorphOne
     {
         return $this->morphOne(ZohoModel::class, 'zohoable');
     }
@@ -21,11 +27,7 @@ trait Zohoable
      */
     public function zohoId(): ?string
     {
-        if ( ! $this->zoho) {
-            return null;
-        }
-
-        return $this->zoho->zoho_id;
+        return $this->zoho?->zoho_id;
     }
 
     /**
@@ -97,7 +99,7 @@ trait Zohoable
         }
 
         if ( ! $id) {
-            $id = $this->findByCriteria()->getEntityId();
+            $id = $this->findByCriteria()->getId();
         }
 
         $this->zoho()->create(['zoho_id' => $id]);
@@ -151,12 +153,14 @@ trait Zohoable
 
         $options = array_merge($this->zohoMandatoryFields(), $options);
 
-        // Here we will create the ZCRMRecord instance on Zoho and store the ID of the
+        // Here we will create the Record instance on Zoho and store the ID of the
         // record from Zoho. This ID will correspond with the Zoho record instance
         // and allow us to retrieve records from Zoho later when we need to work.
         $record = $this->zoho_module->create($options);
 
-        $this->createZohoId($record->getEntityId());
+        if (app()->environment('production')) {
+            $this->createZohoId($record->getDetails()['id']);
+        }
 
         return $record;
     }
@@ -166,10 +170,10 @@ trait Zohoable
      *
      * @param  array  $options
      *
-     * @return object
+     * @return Record
      * @throws InvalidZohoable
      */
-    public function updateZohoable(array $options = [])
+    public function updateZohoable(array $options = []): Record
     {
         if ( ! $this->hasZohoId()) {
             throw InvalidZohoable::nonZohoable($this);
@@ -177,19 +181,19 @@ trait Zohoable
 
         $options = array_merge($this->zohoMandatoryFields(), $options);
 
-        // Here we will create the ZCRMRecord instance on Zoho and store the ID of the
+        // Here we will create the Record instance on Zoho and store the ID of the
         // record from Zoho. This ID will correspond with the Zoho record instance
         // and allow us to retrieve records from Zoho later when we need to work.
         $record = $this->asZohoObject();
 
         foreach ($options as $key => $value) {
-            $record->setFieldValue($key, $value);
+            $record->addKeyValue($key, $value);
         }
 
-        $isUpdated = $record->update();
+        $isUpdated = $this->zoho_module->update($record);
 
         if ($isUpdated) {
-            $this->createOrUpdateZohoId($record->getEntityId());
+            $this->createOrUpdateZohoId($record->getId());
         }
 
         return $record;
@@ -200,11 +204,10 @@ trait Zohoable
      *
      * @return mixed
      * @throws InvalidZohoable
-     * @throws ZCRMException
      */
     public function deleteZohoable(): mixed
     {
-        $this->asZohoObject()->delete();
+        $this->zoho_module->deleteRecord($this->asZohoObject()->getId());
 
         return $this->deleteZohoId();
     }
@@ -222,19 +225,17 @@ trait Zohoable
     /**
      * Get the Zoho Module for this model
      *
-     * @return ZohoModule
+     * @return ZohoManager
      */
-    public function getZohoModule(): ZohoModule
+    public function getZohoModule(): ZohoManager
     {
         return ZohoManager::useModule($this->getZohoModuleName());
     }
 
     /**
      * get zoho object by the module id
-     *
-     * @return object|ZCRMRecord
      */
-    public function asZohoObject()
+    public function asZohoObject(): Record
     {
         return $this->findByZohoId($this->zohoId());
     }
@@ -249,9 +250,9 @@ trait Zohoable
      *
      * @param $id
      *
-     * @return object|ZCRMRecord
+     * @return Record
      */
-    public function findByZohoId($id)
+    public function findByZohoId($id): Record
     {
         return $this->zoho_module->getRecord($id);
     }
@@ -262,7 +263,7 @@ trait Zohoable
      * @return void
      * @throws InvalidZohoable
      */
-    protected function assertZohoableExists()
+    protected function assertZohoableExists(): void
     {
         if ( ! $this->zohoId()) {
             throw InvalidZohoable::nonZohoable($this);
