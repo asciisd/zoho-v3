@@ -158,9 +158,8 @@ trait Zohoable
         // and allow us to retrieve records from Zoho later when we need to work.
         $record = $this->zoho_module->create($options);
 
-        if (app()->environment('production')) {
-            $this->createZohoId($record->getDetails()['id']);
-        }
+        $this->createZohoId($record->getDetails()['id']);
+
 
         return $record;
     }
