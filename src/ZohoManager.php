@@ -7,6 +7,7 @@ use Asciisd\Zoho\Concerns\ManagesRecords;
 use Asciisd\Zoho\Concerns\ManagesActions;
 use Asciisd\Zoho\Concerns\CriteriaBuilder;
 use com\zoho\crm\api\exception\SDKException;
+use Asciisd\Zoho\Concerns\ManagesBulkActions;
 
 class ZohoManager
 {
@@ -14,6 +15,7 @@ class ZohoManager
     use ManagesModules;
     use ManagesRecords;
     use ManagesActions;
+    use ManagesBulkActions;
 
     protected string $module_api_name;
 
