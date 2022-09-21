@@ -77,9 +77,11 @@ trait Zohoable
 
         if ( ! $id) {
             if ( ! is_bool($result = $this->findByCriteria())) {
-                $this->zoho()->update(['zoho_id' => $result->getId()]);
+                $id = $result->getId();
             }
         }
+
+        $this->zoho()->update(['zoho_id' => $id]);
 
         return $this->load('zoho');
     }
@@ -100,9 +102,11 @@ trait Zohoable
 
         if ( ! $id) {
             if ( ! is_bool($result = $this->findByCriteria())) {
-                $this->zoho()->create(['zoho_id' => $result->getId()]);
+                $id = $result->getId();
             }
         }
+
+        $this->zoho()->create(['zoho_id' => $id]);
 
         return $this->load('zoho');
     }
@@ -156,12 +160,12 @@ trait Zohoable
         // Here we will create the Record instance on Zoho and store the ID of the
         // record from Zoho. This ID will correspond with the Zoho record instance
         // and allow us to retrieve records from Zoho later when we need to work.
-        $record = $this->zoho_module->create($options);
+        $records = $this->zoho_module->create($options);
 
-        $this->createZohoId($record->getDetails()['id']);
+        $this->createZohoId($records->getDetails()['id']);
 
 
-        return $record;
+        return $records->getDetails()['id'];
     }
 
     /**
