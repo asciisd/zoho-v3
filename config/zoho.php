@@ -103,7 +103,7 @@ return [
     | Available Environments: PRODUCTION, DEVELOPER, SANDBOX
     |
     */
-    'environment' => USDataCenter::SANDBOX(),
+    'environment' => app()->environment('production') ? USDataCenter::PRODUCTION() : USDataCenter::SANDBOX(),
 
     /*
     |--------------------------------------------------------------------------
