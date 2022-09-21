@@ -146,10 +146,10 @@ trait Zohoable
      *
      * @param  array  $options
      *
-     * @return object
+     * @return object|array
      * @throws InvalidZohoable
      */
-    public function createAsZohoable(array $options = []): object
+    public function createAsZohoable(array $options = []): object|array
     {
         if ($this->zohoId()) {
             throw InvalidZohoable::exists($this);
@@ -165,7 +165,7 @@ trait Zohoable
         $this->createZohoId($records->getDetails()['id']);
 
 
-        return $records->getDetails()['id'];
+        return $records;
     }
 
     /**
