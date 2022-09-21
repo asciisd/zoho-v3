@@ -2,14 +2,14 @@
 
 namespace Asciisd\Zoho;
 
-use com\zoho\api\authenticator\OAuthBuilder;
-use com\zoho\api\authenticator\store\FileStore;
 use com\zoho\api\logger\Levels;
 use com\zoho\api\logger\LogBuilder;
-use com\zoho\crm\api\exception\SDKException;
-use com\zoho\crm\api\InitializeBuilder;
-use com\zoho\crm\api\SDKConfigBuilder;
 use com\zoho\crm\api\UserSignature;
+use com\zoho\crm\api\SDKConfigBuilder;
+use com\zoho\crm\api\InitializeBuilder;
+use com\zoho\crm\api\exception\SDKException;
+use com\zoho\api\authenticator\OAuthBuilder;
+use com\zoho\api\authenticator\store\FileStore;
 
 class Zoho
 {
@@ -53,16 +53,18 @@ class Zoho
      */
     public static function initialize($code = null): void
     {
+        if (app()->environment('testing')) return;
+
         $environment = config('zoho.environment');
         $resourcePath = config('zoho.resourcePath');
         $user = new UserSignature(config('zoho.current_user_email'));
         $token_store = new FileStore(config('zoho.token_persistence_path'));
-        $logger = (new LogBuilder())->level(Levels::INFO)
+        $logger = (new LogBuilder())->level(Levels::ALL)
                                     ->filePath(config('zoho.application_log_file_path'))
                                     ->build();
 
         $token = (new OAuthBuilder())
-            ->clientId(config('zoho.client_id'), )
+            ->clientId(config('zoho.client_id'))
             ->clientSecret(config('zoho.client_secret'))
             ->grantToken($code ?? config('zoho.token'))
             ->redirectURL(config('zoho.redirect_uri'))

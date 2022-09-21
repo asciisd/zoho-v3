@@ -22,9 +22,7 @@ class ZohoManager
     public function __construct($module_api_name = 'Leads')
     {
         try {
-            if (app()->environment('production')) {
-                Zoho::initialize();
-            }
+            Zoho::initialize();
             $this->module_api_name = $module_api_name;
         } catch (SDKException $e) {
             //
