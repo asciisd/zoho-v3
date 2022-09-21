@@ -3,8 +3,10 @@
 namespace Asciisd\Zoho;
 
 use Spatie\LaravelPackageTools\Package;
+use Asciisd\Zoho\Commands\ZohoSetupCommand;
+use Asciisd\Zoho\Commands\ZohoAuthentication;
+use Asciisd\Zoho\Commands\ZohoInstallCommand;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Asciisd\Zoho\Commands\ZohoCommand;
 
 class ZohoServiceProvider extends PackageServiceProvider
 {
@@ -17,7 +19,7 @@ class ZohoServiceProvider extends PackageServiceProvider
          */
         $package
             ->name('zoho-v3')
-            ->hasCommands('ZohoAuthentication', 'ZohoInstallCommand', 'ZohoSetupCommand')
+            ->hasCommands(ZohoAuthentication::class, ZohoInstallCommand::class, ZohoSetupCommand::class)
             ->hasConfigFile('zoho')
             ->hasRoute('web')
             ->hasMigration('create_zohos_table');
