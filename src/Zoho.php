@@ -53,8 +53,6 @@ class Zoho
      */
     public static function initialize($code = null): void
     {
-        if (app()->environment('testing')) return;
-
         $environment = config('zoho.environment');
         $resourcePath = config('zoho.resourcePath');
         $user = new UserSignature(config('zoho.current_user_email'));
