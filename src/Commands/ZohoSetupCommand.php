@@ -42,8 +42,9 @@ class ZohoSetupCommand extends Command
     {
         $grantToken = $this->argument('token');
 
-        if ( ! $grantToken) {
+        if ( ! $grantToken && ! config('zoho.token')) {
             $this->error('The Grant Token is required.');
+            $this->info('generate token by visit : https://accounts.zoho.com/developerconsole');
 
             return 0;
         }
