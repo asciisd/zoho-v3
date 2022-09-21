@@ -17,6 +17,7 @@ class ZohoServiceProvider extends PackageServiceProvider
          */
         $package
             ->name('zoho-v3')
+            ->hasCommands('ZohoAuthentication', 'ZohoInstallCommand', 'ZohoSetupCommand')
             ->hasConfigFile('zoho')
             ->hasRoute('web')
             ->hasMigration('create_zohos_table');
