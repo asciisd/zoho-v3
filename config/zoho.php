@@ -103,7 +103,7 @@ return [
     | Available Environments: PRODUCTION, DEVELOPER, SANDBOX
     |
     */
-    'environment' => app()->environment('production') ? USDataCenter::PRODUCTION() : USDataCenter::SANDBOX(),
+    'environment' => USDataCenter::PRODUCTION(),
 
     /*
     |--------------------------------------------------------------------------
@@ -182,5 +182,5 @@ return [
     | The maximum number of seconds to allow cURL functions to execute.
     |
     */
-    'timeout' => 3,
+    'timeout' => 10,
 ];
