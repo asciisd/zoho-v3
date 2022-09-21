@@ -76,10 +76,10 @@ trait Zohoable
         }
 
         if ( ! $id) {
-            $id = $this->findByCriteria()->getId();
+            if ( ! is_bool($result = $this->findByCriteria())) {
+                $this->zoho()->update(['zoho_id' => $result->getId()]);
+            }
         }
-
-        $this->zoho()->update(['zoho_id' => $id]);
 
         return $this->load('zoho');
     }
@@ -99,10 +99,10 @@ trait Zohoable
         }
 
         if ( ! $id) {
-            $id = $this->findByCriteria()->getId();
+            if ( ! is_bool($result = $this->findByCriteria())) {
+                $this->zoho()->create(['zoho_id' => $result->getId()]);
+            }
         }
-
-        $this->zoho()->create(['zoho_id' => $id]);
 
         return $this->load('zoho');
     }
