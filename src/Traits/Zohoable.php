@@ -76,7 +76,7 @@ trait Zohoable
         }
 
         if ( ! $id) {
-            $id = $this->findByCriteria()[0]->getId();
+            $id = $this->findByCriteria()->getId();
         }
 
         $this->zoho()->update(['zoho_id' => $id]);
