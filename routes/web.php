@@ -2,4 +2,4 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('oauth2callback', 'ZohoController@oauth2callback');
+Route::get('oauth2callback', [\Asciisd\Zoho\Http\Controllers\ZohoController::class, 'oauth2callback']);

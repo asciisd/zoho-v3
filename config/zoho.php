@@ -103,7 +103,7 @@ return [
     | Available Environments: PRODUCTION, DEVELOPER, SANDBOX
     |
     */
-    'environment' => USDataCenter::PRODUCTION(),
+    'environment' => env('ZOHO_SANDBOX', 'false') ? USDataCenter::SANDBOX() : USDataCenter::PRODUCTION(),
 
     /*
     |--------------------------------------------------------------------------
