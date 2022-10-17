@@ -12,7 +12,7 @@ class ZohoController extends Controller
     public function oauth2callback(ZohoRedirectRequest $request)
     {
         try {
-            Zoho::initialize($request->code);
+//            Zoho::initialize($request->code);
         } catch (SDKException $e) {
         }
 
