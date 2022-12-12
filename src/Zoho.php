@@ -53,7 +53,7 @@ class Zoho
      */
     public static function initialize($code = null): void
     {
-        $environment = config('zoho.environment');
+        $environment = self::getDataCenterEnvironment();
         $resourcePath = config('zoho.resourcePath');
         $user = new UserSignature(config('zoho.current_user_email'));
         $token_store = new FileStore(config('zoho.token_persistence_path'));
@@ -86,5 +86,10 @@ class Zoho
             ->resourcePath($resourcePath)
             ->logger($logger)
             ->initialize();
+    }
+    
+    private static function getDataCenterEnvironment(): Environment
+    {
+      return ((bool) config('zoho.environment')) ? USDataCenter::SANDBOX() : USDataCenter::PRODUCTION();
     }
 }
