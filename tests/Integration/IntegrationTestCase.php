@@ -2,6 +2,7 @@
 
 namespace Asciisd\Zoho\Tests\Integration;
 
+use Asciisd\Zoho\Zoho;
 use com\zoho\api\logger\Levels;
 use Asciisd\Zoho\Tests\TestCase;
 use com\zoho\api\logger\LogBuilder;
@@ -28,7 +29,7 @@ abstract class IntegrationTestCase extends TestCase
 
         $user = new UserSignature(getenv('ZOHO_CURRENT_USER_EMAIL'));
 
-        $environment = USDataCenter::SANDBOX();
+        $environment = Zoho::getDataCenterEnvironment();
 
         $token = (new OAuthBuilder())
             ->clientId(getenv('ZOHO_CLIENT_ID'))
