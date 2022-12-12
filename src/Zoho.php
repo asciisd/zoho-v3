@@ -88,7 +88,7 @@ class Zoho
             ->initialize();
     }
     
-    private static function getDataCenterEnvironment(): Environment
+    public static function getDataCenterEnvironment(): Environment
     {
       return ((bool) config('zoho.environment')) ? USDataCenter::SANDBOX() : USDataCenter::PRODUCTION();
     }
