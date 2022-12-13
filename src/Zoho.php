@@ -5,6 +5,7 @@ namespace Asciisd\Zoho;
 use com\zoho\api\logger\Levels;
 use com\zoho\api\logger\LogBuilder;
 use com\zoho\crm\api\UserSignature;
+use com\zoho\crm\api\dc\Environment;
 use com\zoho\crm\api\dc\USDataCenter;
 use com\zoho\crm\api\SDKConfigBuilder;
 use com\zoho\crm\api\InitializeBuilder;
@@ -54,13 +55,13 @@ class Zoho
      */
     public static function initialize($code = null): void
     {
-        $environment = self::getDataCenterEnvironment();
+        $environment  = self::getDataCenterEnvironment();
         $resourcePath = config('zoho.resourcePath');
-        $user = new UserSignature(config('zoho.current_user_email'));
-        $token_store = new FileStore(config('zoho.token_persistence_path'));
-        $logger = (new LogBuilder())->level(Levels::ALL)
-                                    ->filePath(config('zoho.application_log_file_path'))
-                                    ->build();
+        $user         = new UserSignature(config('zoho.current_user_email'));
+        $token_store  = new FileStore(config('zoho.token_persistence_path'));
+        $logger       = (new LogBuilder())->level(Levels::ALL)
+                                          ->filePath(config('zoho.application_log_file_path'))
+                                          ->build();
 
         $token = (new OAuthBuilder())
             ->clientId(config('zoho.client_id'))
@@ -88,9 +89,9 @@ class Zoho
             ->logger($logger)
             ->initialize();
     }
-    
-    public static function getDataCenterEnvironment(): Environment
+
+    public static function getDataCenterEnvironment(): ?Environment
     {
-      return ((bool) config('zoho.environment')) ? USDataCenter::SANDBOX() : USDataCenter::PRODUCTION();
+        return config('zoho.environment') ? USDataCenter::SANDBOX() : USDataCenter::PRODUCTION();
     }
 }
