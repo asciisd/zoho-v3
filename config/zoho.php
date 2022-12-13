@@ -1,6 +1,5 @@
 <?php
 // config for Asciisd/Zoho
-use com\zoho\crm\api\dc\USDataCenter;
 
 return [
     /*
@@ -103,7 +102,7 @@ return [
     | Available Environments: PRODUCTION, DEVELOPER, SANDBOX
     |
     */
-    'environment' => env('ZOHO_SANDBOX', 'false') ? USDataCenter::SANDBOX() : USDataCenter::PRODUCTION(),
+    'environment' => env('ZOHO_SANDBOX', 'false'),
 
     /*
     |--------------------------------------------------------------------------
