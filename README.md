@@ -42,6 +42,9 @@ ZOHO_CLIENT_SECRET="Code from Client Secrit Section"
 ZOHO_REDIRECT_URI=https://APP_URL/zoho/oauth2callback
 ZOHO_CURRENT_USER_EMAIL=admin@example.com
 ZOHO_TOKEN="Code Generated from last step"
+
+# available datacenters (USDataCenter, EUDataCenter, INDataCenter, CNDataCenter, AUDataCenter)
+ZOHO_DATACENTER=USDataCenter
 ZOHO_SANDBOX=true
 ```
 
@@ -57,6 +60,16 @@ You can publish and run the migrations with:
 php artisan vendor:publish --tag="zoho-v3-migrations"
 php artisan migrate
 ```
+
+### Environments
+maybe in some cases you wish to enforce zoho to use one of zoho's environments, so you can go to `AppServiceProvider`
+and use `Zoho::useEnvironment()` method
+
+```php
+Zoho::useEnvironment(EUDataCenter::DEVELOPER());
+```
+
+So that will override config settings.
 
 ## Usage
 
