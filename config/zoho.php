@@ -94,12 +94,13 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | ZOHO Environment & Datacenter
+    | ZOHO Environment
     |--------------------------------------------------------------------------
     |
-    | which is of the pattern Domain.Environment
+    | which is of the pattern Datacenter::Environment
+    | Available Environments: PRODUCTION, DEVELOPER, SANDBOX, but we only used PRODUCTION & SANDBOX
+    | by setting environment as true Zoho will use SANDBOX and false will use PRODUCTION
     | Available Domains: USDataCenter, EUDataCenter, INDataCenter, CNDataCenter, AUDataCenter
-    | Available Environments: PRODUCTION, DEVELOPER, SANDBOX
     |
     */
     'environment' => env('ZOHO_SANDBOX', false),

@@ -111,6 +111,10 @@ class Zoho
 
     public static function getDataCenterEnvironment(): ?Environment
     {
+        if ( ! empty(static::$environment)) {
+            return static::$environment;
+        }
+
         return match (config('zoho.datacenter')) {
             'USDataCenter' => config('zoho.environment') ? USDataCenter::SANDBOX() : USDataCenter::PRODUCTION(),
             'EUDataCenter' => config('zoho.environment') ? EUDataCenter::SANDBOX() : EUDataCenter::PRODUCTION(),
