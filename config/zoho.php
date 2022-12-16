@@ -102,7 +102,7 @@ return [
     | Available Environments: PRODUCTION, DEVELOPER, SANDBOX
     |
     */
-    'environment' => env('ZOHO_SANDBOX', 'false'),
+    'environment' => env('ZOHO_SANDBOX', false),
 
     /*
     |--------------------------------------------------------------------------
