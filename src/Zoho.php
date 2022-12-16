@@ -7,6 +7,10 @@ use com\zoho\api\logger\LogBuilder;
 use com\zoho\crm\api\UserSignature;
 use com\zoho\crm\api\dc\Environment;
 use com\zoho\crm\api\dc\USDataCenter;
+use com\zoho\crm\api\dc\EUDataCenter;
+use com\zoho\crm\api\dc\INDataCenter;
+use com\zoho\crm\api\dc\CNDataCenter;
+use com\zoho\crm\api\dc\AUDataCenter;
 use com\zoho\crm\api\SDKConfigBuilder;
 use com\zoho\crm\api\InitializeBuilder;
 use com\zoho\crm\api\exception\SDKException;
@@ -18,7 +22,7 @@ class Zoho
     /**
      * The Zoho library version.
      */
-    public const VERSION = '1.0.0';
+    public const VERSION = '1.1.2';
 
     /**
      * Indicates if Zoho migrations will be run.
@@ -29,6 +33,11 @@ class Zoho
      * Indicates if Zoho routes will be registered.
      */
     public static bool $registersRoutes = true;
+
+    /**
+     * Indicates if Zoho routes will be registered.
+     */
+    public static Environment|null $environment = null;
 
     /**
      * Configure Zoho to not register its migrations.
@@ -51,11 +60,21 @@ class Zoho
     }
 
     /**
+     * Configure Zoho to use a specific environment
+     */
+    public static function useEnvironment(Environment $environment): static
+    {
+        static::$environment = $environment;
+
+        return new static();
+    }
+
+    /**
      * @throws SDKException
      */
     public static function initialize($code = null): void
     {
-        $environment  = self::getDataCenterEnvironment();
+        $environment  = self::$environment ?: self::getDataCenterEnvironment();
         $resourcePath = config('zoho.resourcePath');
         $user         = new UserSignature(config('zoho.current_user_email'));
         $token_store  = new FileStore(config('zoho.token_persistence_path'));
@@ -92,6 +111,12 @@ class Zoho
 
     public static function getDataCenterEnvironment(): ?Environment
     {
-        return config('zoho.environment') ? USDataCenter::SANDBOX() : USDataCenter::PRODUCTION();
+        return match (config('zoho.datacenter')) {
+            'USDataCenter' => config('zoho.environment') ? USDataCenter::SANDBOX() : USDataCenter::PRODUCTION(),
+            'EUDataCenter' => config('zoho.environment') ? EUDataCenter::SANDBOX() : EUDataCenter::PRODUCTION(),
+            'INDataCenter' => config('zoho.environment') ? INDataCenter::SANDBOX() : INDataCenter::PRODUCTION(),
+            'CNDataCenter' => config('zoho.environment') ? CNDataCenter::SANDBOX() : CNDataCenter::PRODUCTION(),
+            'AUDataCenter' => config('zoho.environment') ? AUDataCenter::SANDBOX() : AUDataCenter::PRODUCTION(),
+        };
     }
 }

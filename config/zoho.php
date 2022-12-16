@@ -94,7 +94,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | ZOHO Environment
+    | ZOHO Environment & Datacenter
     |--------------------------------------------------------------------------
     |
     | which is of the pattern Domain.Environment
@@ -103,6 +103,7 @@ return [
     |
     */
     'environment' => env('ZOHO_SANDBOX', false),
+    'datacenter' => env('ZOHO_DATACENTER', 'USDataCenter'),
 
     /*
     |--------------------------------------------------------------------------
