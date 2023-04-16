@@ -10,22 +10,16 @@ class ZohoSetupCommand extends Command
 {
     /**
      * The name and signature of the console command.
-     *
-     * @var string
      */
     protected $signature = 'zoho:grant {token? : generate grant token from https://accounts.zoho.com/developerconsole}';
 
     /**
      * The console command description.
-     *
-     * @var string
      */
     protected $description = 'Setup zoho credentials in case you used Self-Client OAuth method';
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -35,7 +29,6 @@ class ZohoSetupCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
      * @throws SDKException
      */
     public function handle()

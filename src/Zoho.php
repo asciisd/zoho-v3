@@ -22,7 +22,7 @@ class Zoho
     /**
      * The Zoho library version.
      */
-    public const VERSION = '1.1.2';
+    public const VERSION = '2.0.1';
 
     /**
      * Indicates if Zoho migrations will be run.

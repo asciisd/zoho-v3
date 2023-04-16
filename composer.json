@@ -15,7 +15,7 @@
         "php": "^8.1|^8.2",
         "illuminate/contracts": "^9.0|^10.0",
         "spatie/laravel-package-tools": "^1.14.2",
-        "zohocrm/php-sdk-3.0": "^1.0@beta"
+        "zohocrm/php-sdk-2.1": "^7.1"
     },
     "require-dev": {
         "nunomaduro/collision": "^6.0",

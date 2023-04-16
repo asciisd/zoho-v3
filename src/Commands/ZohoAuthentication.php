@@ -10,15 +10,11 @@ class ZohoAuthentication extends Command
 {
     /**
      * The name and signature of the console command.
-     *
-     * @var string
      */
     protected $signature = 'zoho:authentication';
 
     /**
      * The console command description.
-     *
-     * @var string
      */
     protected $description = 'Generate OAuth url to complete the Authentication process.';
 
@@ -34,8 +30,6 @@ class ZohoAuthentication extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
     public function handle()
     {
