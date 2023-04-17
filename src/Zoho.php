@@ -82,12 +82,31 @@ class Zoho
                                           ->filePath(config('zoho.application_log_file_path'))
                                           ->build();
 
-        $token = (new OAuthBuilder())
-            ->clientId(config('zoho.client_id'))
-            ->clientSecret(config('zoho.client_secret'))
-            ->grantToken($code ?? config('zoho.token'))
-            ->redirectURL(config('zoho.redirect_uri'))
-            ->build();
+        switch (config('zoho.auth_flow_type')) {
+            case 'accessToken':
+                $token = (new OAuthBuilder())
+                    ->accessToken(config('zoho.token'))
+                    ->build();
+                break;
+
+            case 'refreshToken':
+                $token = (new OAuthBuilder())
+                    ->clientId(config('zoho.client_id'))
+                    ->clientSecret(config('zoho.client_secret'))
+                    ->refreshToken($code ?? config('zoho.token'))
+                    ->redirectURL(config('zoho.redirect_uri'))
+                    ->build();
+                break;
+
+            default: // As in 'grantToken' <- was the only option before this change
+                $token = (new OAuthBuilder())
+                    ->clientId(config('zoho.client_id'))
+                    ->clientSecret(config('zoho.client_secret'))
+                    ->grantToken($code ?? config('zoho.token'))
+                    ->redirectURL(config('zoho.redirect_uri'))
+                    ->build();
+                break;
+        }
 
         $sdkConfig = (new SDKConfigBuilder())
             ->autoRefreshFields(config('zoho.autoRefreshFields'))
