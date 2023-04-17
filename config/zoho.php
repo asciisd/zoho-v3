@@ -28,9 +28,21 @@ return [
     |--------------------------------------------------------------------------
     |
     | Zoho's token for OAuth process
+    | Depending on $auth_flow_type (see below) this could be a grantToken, refreshToken or accessToken
     |
     */
     'token' => env('ZOHO_TOKEN', null),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Authentication Flow Type
+    |--------------------------------------------------------------------------
+    |
+    | Which authentication flow to use
+    | Zoho SDK Supports grantToken, refreshToken and accessToken
+    |
+    */
+    'auth_flow_type' => env('ZOHO_AUTH_FLOW_TYPE', 'grantToken'),
 
     /*
     |--------------------------------------------------------------------------
