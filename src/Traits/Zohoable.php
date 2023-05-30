@@ -188,6 +188,7 @@ trait Zohoable
         // record from Zoho. This ID will correspond with the Zoho record instance
         // and allow us to retrieve records from Zoho later when we need to work.
         $record = $this->asZohoObject();
+        $record->setId($record->getId());
 
         foreach ($options as $key => $value) {
             $record->addKeyValue($key, $value);
