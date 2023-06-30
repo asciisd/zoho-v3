@@ -22,20 +22,22 @@ trait ManagesRecords
     /**
      * get the records array of given module api name
      */
-    public function getRecords($page = 1, $perPage = 200): array
+    public function getRecords($page = 1, $perPage = 200, $sortBy = 'id', $sortOrder = 'desc'): array
     {
         $recordOperations = new RecordOperations();
         $paramInstance = new ParameterMap();
 
         $paramInstance->add(GetRecordsParam::page(), $page);
         $paramInstance->add(GetRecordsParam::perPage(), $perPage);
+        $paramInstance->add(GetRecordsParam::sortBy(), $sortBy);
+        $paramInstance->add(GetRecordsParam::sortOrder(), $sortOrder);
 
         return $this->handleRecordResponse(
             $recordOperations->getRecords($this->module_api_name, $paramInstance)
         );
     }
 
-    public function searchRecordsByCriteria(string $criteria, $page = 1, $perPage = 200): array
+    public function searchRecordsByCriteria(string $criteria, $page = 1, $perPage = 200, $sortBy = 'id', $sortOrder = 'desc'): array
     {
         $recordOperations = new RecordOperations();
         $paramInstance = new ParameterMap();
@@ -43,13 +45,15 @@ trait ManagesRecords
         $paramInstance->add(SearchRecordsParam::criteria(), $criteria);
         $paramInstance->add(GetRecordsParam::page(), $page);
         $paramInstance->add(GetRecordsParam::perPage(), $perPage);
+        $paramInstance->add(GetRecordsParam::sortBy(), $sortBy);
+        $paramInstance->add(GetRecordsParam::sortOrder(), $sortOrder);
 
         return $this->handleRecordResponse(
             $recordOperations->searchRecords($this->module_api_name, $paramInstance)
         );
     }
 
-    public function searchRecordsByWord(string $word, $page = 1, $perPage = 200): array
+    public function searchRecordsByWord(string $word, $page = 1, $perPage = 200, $sortBy = 'id', $sortOrder = 'desc'): array
     {
         $recordOperations = new RecordOperations();
         $paramInstance = new ParameterMap();
@@ -57,13 +61,15 @@ trait ManagesRecords
         $paramInstance->add(SearchRecordsParam::word(), $word);
         $paramInstance->add(GetRecordsParam::page(), $page);
         $paramInstance->add(GetRecordsParam::perPage(), $perPage);
+        $paramInstance->add(GetRecordsParam::sortBy(), $sortBy);
+        $paramInstance->add(GetRecordsParam::sortOrder(), $sortOrder);
 
         return $this->handleRecordResponse(
             $recordOperations->searchRecords($this->module_api_name, $paramInstance)
         );
     }
 
-    public function searchRecordsByPhone(string $phone, $page = 1, $perPage = 200): array
+    public function searchRecordsByPhone(string $phone, $page = 1, $perPage = 200, $sortBy = 'id', $sortOrder = 'desc'): array
     {
         $recordOperations = new RecordOperations();
         $paramInstance = new ParameterMap();
@@ -71,13 +77,15 @@ trait ManagesRecords
         $paramInstance->add(SearchRecordsParam::phone(), $phone);
         $paramInstance->add(GetRecordsParam::page(), $page);
         $paramInstance->add(GetRecordsParam::perPage(), $perPage);
+        $paramInstance->add(GetRecordsParam::sortBy(), $sortBy);
+        $paramInstance->add(GetRecordsParam::sortOrder(), $sortOrder);
 
         return $this->handleRecordResponse(
             $recordOperations->searchRecords($this->module_api_name, $paramInstance)
         );
     }
 
-    public function searchRecordsByEmail(string $email, $page = 1, $perPage = 200): array
+    public function searchRecordsByEmail(string $email, $page = 1, $perPage = 200, $sortBy = 'id', $sortOrder = 'desc'): array
     {
         $recordOperations = new RecordOperations();
         $paramInstance = new ParameterMap();
@@ -85,6 +93,8 @@ trait ManagesRecords
         $paramInstance->add(SearchRecordsParam::email(), $email);
         $paramInstance->add(GetRecordsParam::page(), $page);
         $paramInstance->add(GetRecordsParam::perPage(), $perPage);
+        $paramInstance->add(GetRecordsParam::sortBy(), $sortBy);
+        $paramInstance->add(GetRecordsParam::sortOrder(), $sortOrder);
 
         return $this->handleRecordResponse(
             $recordOperations->searchRecords($this->module_api_name, $paramInstance)
