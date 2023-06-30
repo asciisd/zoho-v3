@@ -5,11 +5,14 @@ namespace Asciisd\Zoho\Concerns;
 use com\zoho\crm\api\ParameterMap;
 use com\zoho\crm\api\record\Record;
 use com\zoho\crm\api\record\BodyWrapper;
-use com\zoho\crm\api\record\ActionWrapper;
 use com\zoho\crm\api\modules\APIException;
+use com\zoho\crm\api\record\ActionWrapper;
 use com\zoho\crm\api\record\SuccessResponse;
 use com\zoho\crm\api\record\RecordOperations;
+use com\zoho\crm\api\record\SuccessfulConvert;
+use com\zoho\crm\api\record\ConvertBodyWrapper;
 use com\zoho\crm\api\record\DeleteRecordsParam;
+use com\zoho\crm\api\record\ConvertActionWrapper;
 
 trait ManagesActions
 {
@@ -60,6 +63,18 @@ trait ManagesActions
         );
     }
 
+    public function convertLead(string $id, $data)
+    {
+
+        $recordOperations = new RecordOperations();
+        $body = new ConvertBodyWrapper();
+        $body->setData($data);
+
+        return $this->handleConvertResponse(
+            $recordOperations->convertLead($id, $body)
+        );
+    }
+
     private function handleActionResponse($response): SuccessResponse|array
     {
         if ($response != null) {
@@ -78,7 +93,38 @@ trait ManagesActions
                     if ($actionResponse instanceof SuccessResponse) {
                         return $actionResponse;
                     }
-                } elseif ($responseHandler instanceof APIException) {
+                }
+
+                if ($responseHandler instanceof APIException) {
+                    logger()->error($responseHandler->getMessage()->getValue());
+                }
+            }
+        }
+
+        return [];
+    }
+
+    private function handleConvertResponse($response): SuccessfulConvert|array
+    {
+        if ($response != null) {
+            if (in_array($response->getStatusCode(), array(204, 304))) {
+                logger()->error($response->getStatusCode() == 204 ? "No Content" : "Not Modified");
+
+                return [];
+            }
+
+            if ($response->isExpected()) {
+                $responseHandler = $response->getObject();
+
+                if ($responseHandler instanceof ConvertActionWrapper) {
+                    $actionResponse = $responseHandler->getData()[0];
+
+                    if ($actionResponse instanceof SuccessfulConvert) {
+                        return $actionResponse;
+                    }
+                }
+
+                if ($responseHandler instanceof APIException) {
                     logger()->error($responseHandler->getMessage()->getValue());
                 }
             }
