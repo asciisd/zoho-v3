@@ -6,6 +6,7 @@ use Asciisd\Zoho\Concerns\ManagesModules;
 use Asciisd\Zoho\Concerns\ManagesRecords;
 use Asciisd\Zoho\Concerns\ManagesActions;
 use Asciisd\Zoho\Concerns\CriteriaBuilder;
+use Asciisd\Zoho\Concerns\ManagesTags;
 use com\zoho\crm\api\exception\SDKException;
 use Asciisd\Zoho\Concerns\ManagesBulkActions;
 
@@ -14,6 +15,7 @@ class ZohoManager
     use CriteriaBuilder;
     use ManagesModules;
     use ManagesRecords;
+    use ManagesTags;
     use ManagesActions;
     use ManagesBulkActions;
 
