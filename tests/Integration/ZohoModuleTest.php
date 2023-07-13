@@ -155,11 +155,4 @@ class ZohoModuleTest extends IntegrationTestCase
 
         ZohoManager::make(self::TESTING_MODULE)->deleteRecord($id);
     }
-
-    protected function setUp(): void
-    {
-        $this->initialize();
-
-        parent::setUp();
-    }
 }

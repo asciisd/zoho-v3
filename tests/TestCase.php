@@ -26,6 +26,8 @@ class TestCase extends OrchestraTestCase
 
     public function getEnvironmentSetUp($app)
     {
+        config()->set('zoho.application_log_file_path', __DIR__.'/../Fixture/Storage/oauth/logs/ZCRMClientLibrary.log');
+        config()->set('zoho.resourcePath', __DIR__.'/../Fixture/Storage/oauth/');
         config()->set('database.default', 'testing');
 
         /*
