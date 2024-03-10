@@ -9,16 +9,13 @@ use com\zoho\crm\api\modules\APIException;
 use com\zoho\crm\api\record\ActionWrapper;
 use com\zoho\crm\api\record\SuccessResponse;
 use com\zoho\crm\api\record\RecordOperations;
-use com\zoho\crm\api\record\SuccessfulConvert;
-use com\zoho\crm\api\record\ConvertBodyWrapper;
 use com\zoho\crm\api\record\DeleteRecordsParam;
-use com\zoho\crm\api\record\ConvertActionWrapper;
 
 trait ManagesActions
 {
     public function create(array $args = []): SuccessResponse|array
     {
-        $recordOperations = new RecordOperations();
+        $recordOperations = new RecordOperations($this->module_api_name);
         $bodyWrapper = new BodyWrapper();
         $record = new Record();
 
@@ -29,18 +26,18 @@ trait ManagesActions
         $bodyWrapper->setData([$record]);
 
         return $this->handleActionResponse(
-            $recordOperations->createRecords($this->module_api_name, $bodyWrapper)
+            $recordOperations->createRecords($bodyWrapper)
         );
     }
 
     public function update(Record $record): SuccessResponse|array
     {
-        $recordOperations = new RecordOperations();
+        $recordOperations = new RecordOperations($this->module_api_name);
         $request = new BodyWrapper();
         $request->setData([$record]);
 
         return $this->handleActionResponse(
-            $recordOperations->updateRecords($this->module_api_name, $request)
+            $recordOperations->updateRecords($request)
         );
     }
 
@@ -51,7 +48,7 @@ trait ManagesActions
 
     public function delete(array $recordIds): SuccessResponse|array
     {
-        $recordOperations = new RecordOperations();
+        $recordOperations = new RecordOperations($this->module_api_name);
         $paramInstance = new ParameterMap();
 
         foreach ($recordIds as $id) {
@@ -59,14 +56,14 @@ trait ManagesActions
         }
 
         return $this->handleActionResponse(
-            $recordOperations->deleteRecords($this->module_api_name, $paramInstance)
+            $recordOperations->deleteRecords($paramInstance)
         );
     }
 
     public function convertLead(string $id, $data)
     {
 
-        $recordOperations = new RecordOperations();
+        $recordOperations = new RecordOperations($this->module_api_name);
         $body = new ConvertBodyWrapper();
         $body->setData($data);
 

@@ -31,12 +31,11 @@ class ZohoAuthentication extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $client_id     = config('zoho.client_id');
         $client_domain = config('zoho.redirect_uri');
         $accounts_url  = config('zoho.accounts_url');
-        
         $scope         = config('zoho.oauth_scope');
         $prompt        = 'consent';
         $response_type = 'code';

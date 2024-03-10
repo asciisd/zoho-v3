@@ -11,7 +11,7 @@ trait ManagesBulkActions
 {
     public function bulkCreate(array $records = []): ActionWrapper|array
     {
-        $recordOperations = new RecordOperations();
+        $recordOperations = new RecordOperations($this->module_api_name);
         $bodyWrapper = new BodyWrapper();
 
         $bodyWrapper->setData($records);
@@ -19,7 +19,7 @@ trait ManagesBulkActions
         $bodyWrapper->setTrigger($trigger);
 
         return $this->handleBulkActionResponse(
-            $recordOperations->createRecords($this->module_api_name, $bodyWrapper)
+            $recordOperations->createRecords($bodyWrapper)
         );
     }
 

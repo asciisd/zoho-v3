@@ -2,26 +2,27 @@
 
 namespace Asciisd\Zoho;
 
-use com\zoho\api\logger\Levels;
-use com\zoho\api\logger\LogBuilder;
-use com\zoho\crm\api\dc\Environment;
-use com\zoho\crm\api\dc\USDataCenter;
-use com\zoho\crm\api\dc\EUDataCenter;
-use com\zoho\crm\api\dc\INDataCenter;
-use com\zoho\crm\api\dc\CNDataCenter;
-use com\zoho\crm\api\dc\AUDataCenter;
-use com\zoho\crm\api\SDKConfigBuilder;
-use com\zoho\crm\api\InitializeBuilder;
-use com\zoho\crm\api\exception\SDKException;
 use com\zoho\api\authenticator\OAuthBuilder;
 use com\zoho\api\authenticator\store\FileStore;
+use com\zoho\api\logger\Levels;
+use com\zoho\api\logger\LogBuilder;
+use com\zoho\crm\api\dc\AUDataCenter;
+use com\zoho\crm\api\dc\CNDataCenter;
+use com\zoho\crm\api\dc\Environment;
+use com\zoho\crm\api\dc\EUDataCenter;
+use com\zoho\crm\api\dc\INDataCenter;
+use com\zoho\crm\api\dc\USDataCenter;
+use com\zoho\crm\api\exception\SDKException;
+use com\zoho\crm\api\InitializeBuilder;
+use com\zoho\crm\api\SDKConfigBuilder;
+use com\zoho\crm\api\UserSignature;
 
 class Zoho
 {
     /**
      * The Zoho library version.
      */
-    public const VERSION = '2.0.1';
+    public const VERSION = '2.1.3';
 
     /**
      * Indicates if Zoho migrations will be run.
@@ -75,23 +76,25 @@ class Zoho
     {
         dump('initializing...');
 
-        $environment  = self::$environment ?: self::getDataCenterEnvironment();
+        $environment = self::$environment ?: self::getDataCenterEnvironment();
         $resourcePath = config('zoho.resourcePath');
-        //$user         = new UserSignature(config('zoho.current_user_email'));
+        $user = new UserSignature(config('zoho.current_user_email'));
         $token_store = new FileStore(config('zoho.token_persistence_path'));
-        $logger      = (new LogBuilder())->level(Levels::ALL)
-                                         ->filePath(config('zoho.application_log_file_path'))
-                                         ->build();
+        $logger = (new LogBuilder())->level(Levels::ALL)
+            ->filePath(config('zoho.application_log_file_path'))
+            ->build();
 
         switch (config('zoho.auth_flow_type')) {
             case 'accessToken':
                 $token = (new OAuthBuilder())
+                    ->id(config("zoho.current_user_email"))
                     ->accessToken(config('zoho.token'))
                     ->build();
                 break;
 
             case 'refreshToken':
                 $token = (new OAuthBuilder())
+                    ->id(config("zoho.current_user_email"))
                     ->clientId(config('zoho.client_id'))
                     ->clientSecret(config('zoho.client_secret'))
                     ->refreshToken($code ?? config('zoho.token'))
@@ -99,12 +102,13 @@ class Zoho
                     ->build();
                 break;
 
-            default: // As in 'grantToken' <- was the only option before this change
+            case 'grantToken':
                 $token = (new OAuthBuilder())
-                    ->clientId(config('zoho.client_id'))
-                    ->clientSecret(config('zoho.client_secret'))
-                    ->grantToken($code ?? config('zoho.token'))
-                    ->redirectURL(config('zoho.redirect_uri'))
+                    ->id(config("zoho.current_user_email"))
+                    ->clientId(config("zoho.client_id"))
+                    ->clientSecret(config("zoho.client_secret"))
+                    ->grantToken($code ?? config("zoho.token"))
+                    ->redirectURL(config("zoho.redirect_uri"))
                     ->build();
                 break;
         }
@@ -130,7 +134,7 @@ class Zoho
 
     public static function getDataCenterEnvironment(): ?Environment
     {
-        if ( ! empty(static::$environment)) {
+        if (!empty(static::$environment)) {
             return static::$environment;
         }
 

@@ -19,11 +19,10 @@ your app:
 1. Visit this page [https://api-console.zoho.com/](https://api-console.zoho.com)
 2. Click on `ADD CLIENT`.
 3. Choose a `Self Client`.
-4. Enter `Scope: aaaserver.profile.READ,ZohoCRM.modules.ALL,ZohoCRM.settings.ALL`.
-5. Create grant token by providing the necessary scopes, time duration (the duration for which the generated token is
+4. Create grant token by providing the necessary scopes, time duration (the duration for which the generated token is
    valid) and Scope Description.
-6. Your Client app would have been created and displayed by now.
-7. Select the created OAuth client.
+5. Your Client app would have been created and displayed by now.
+6. Select the created OAuth client.
 
 ## Installation
 
@@ -32,20 +31,38 @@ You can install the package via `composer require`:
 ```bash
 composer require asciisd/zoho-v3
 ```
+After installing the package you can publish the config file with:
+
+```bash
+php artisan vendor:publish --tag="zoho-v3-config"
+```
+
+after that you need to create the OAuth client and get the credentials from Zoho by run the following command:
+
+```bash
+php artisan zoho:install
+```
 
 You'll need to add the following variables to your .env file. Use the credentials previously obtained registering your
 application.
 
 ```dotenv
+ZOHO_AUTH_FLOW_TYPE=grantToken
 ZOHO_CLIENT_ID="Code from Client Secrit Section"
 ZOHO_CLIENT_SECRET="Code from Client Secrit Section"
-ZOHO_REDIRECT_URI=https://APP_URL/zoho/oauth2callback
+ZOHO_REDIRECT_URI="${APP_URL}/zoho/oauth2callback"
 ZOHO_CURRENT_USER_EMAIL=admin@example.com
 ZOHO_TOKEN="Code Generated from last step"
 
 # available datacenters (USDataCenter, EUDataCenter, INDataCenter, CNDataCenter, AUDataCenter)
 ZOHO_DATACENTER=USDataCenter
 ZOHO_SANDBOX=true
+```
+
+After that you need to run the following command to add token and refresh token to your storage
+
+```bash
+php artisan zoho:grant
 ```
 
 You can publish the config file with:

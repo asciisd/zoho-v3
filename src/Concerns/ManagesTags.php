@@ -2,6 +2,7 @@
 
 namespace Asciisd\Zoho\Concerns;
 
+use com\zoho\crm\api\tags\AddTagsParam;
 use com\zoho\crm\api\tags\Tag;
 use com\zoho\crm\api\ParameterMap;
 use com\zoho\crm\api\tags\GetTagsParam;
@@ -14,9 +15,7 @@ use com\zoho\crm\api\modules\APIException;
 use com\zoho\crm\api\tags\ConflictWrapper;
 use com\zoho\crm\api\tags\CreateTagsParam;
 use com\zoho\crm\api\exception\SDKException;
-use com\zoho\crm\api\tags\AddTagsToRecordParam;
 use com\zoho\crm\api\tags\GetRecordCountForTagParam;
-use com\zoho\crm\api\tags\RemoveTagsFromRecordParam;
 use com\zoho\crm\api\tags\AddTagsToMultipleRecordsParam;
 use com\zoho\crm\api\tags\RemoveTagsFromMultipleRecordsParam;
 use com\zoho\crm\api\tags\ResponseWrapper as TagResponseWrapper;
@@ -217,14 +216,14 @@ trait ManagesTags {
         $paramInstance = new ParameterMap();
 
         foreach ($tagNames as $tagName) {
-            $paramInstance->add(AddTagsToRecordParam::tagNames(), $tagName);
+            $paramInstance->add(AddTagsParam::overWrite(), $tagName);
         }
 
-        $paramInstance->add(AddTagsToRecordParam::overWrite(), "false");
+        $paramInstance->add(AddTagsParam::overWrite(), "false");
 
         //Call addTagsToRecord method that takes paramInstance, moduleAPIName and recordId as parameter
         return $this->handleTagResponse(
-            $tagsOperations->addTagsToRecord(
+            $tagsOperations->addTagsToMultipleRecords(
                 $recordId,
                 $this->module_api_name,
                 $paramInstance
@@ -250,12 +249,12 @@ trait ManagesTags {
 
         foreach($tagNames as $tagName)
         {
-            $paramInstance->add(RemoveTagsFromRecordParam::tagNames(), $tagName);
+            $paramInstance->add(RemoveTagsFromMultipleRecordsParam::ids(), $tagName);
         }
 
         //Call removeTagsFromRecord method that takes paramInstance, moduleAPIName and recordId as parameter
         return $this->handleTagResponse(
-        $tagsOperations->removeTagsFromRecord(
+        $tagsOperations->removeTagsFromMultipleRecords(
             $recordId,
             $this->module_api_name,
             $paramInstance)
@@ -364,7 +363,7 @@ trait ManagesTags {
                 }
 
                 if ($responseHandler instanceof APIException) {
-                    logger()->error($responseHandler->getMessage()->getValue());
+                    logger()->error($responseHandler->getMessage());
                 }
             }
         }

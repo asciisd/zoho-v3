@@ -24,8 +24,8 @@ class ZohoManager
     public function __construct($module_api_name = 'Leads')
     {
         try {
-            Zoho::initialize();
             $this->module_api_name = $module_api_name;
+            Zoho::initialize();
         } catch (SDKException $e) {
             //
         }

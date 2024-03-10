@@ -15,7 +15,7 @@ trait ManagesRecords
     public function getRecord(string $record_id): Record
     {
         return $this->handleRecordResponse(
-            (new RecordOperations())->getRecord($record_id, $this->module_api_name)
+            (new RecordOperations($this->module_api_name))->getRecord($record_id)
         )[0];
     }
 
@@ -24,7 +24,7 @@ trait ManagesRecords
      */
     public function getRecords($page = 1, $perPage = 200, $sortBy = 'id', $sortOrder = 'desc'): array
     {
-        $recordOperations = new RecordOperations();
+        $recordOperations = new RecordOperations($this->module_api_name);
         $paramInstance = new ParameterMap();
 
         $paramInstance->add(GetRecordsParam::page(), $page);
@@ -33,13 +33,13 @@ trait ManagesRecords
         $paramInstance->add(GetRecordsParam::sortOrder(), $sortOrder);
 
         return $this->handleRecordResponse(
-            $recordOperations->getRecords($this->module_api_name, $paramInstance)
+            $recordOperations->getRecords($paramInstance)
         );
     }
 
     public function searchRecordsByCriteria(string $criteria, $page = 1, $perPage = 200, $sortBy = 'id', $sortOrder = 'desc'): array
     {
-        $recordOperations = new RecordOperations();
+        $recordOperations = new RecordOperations($this->module_api_name);
         $paramInstance = new ParameterMap();
 
         $paramInstance->add(SearchRecordsParam::criteria(), $criteria);
@@ -49,13 +49,13 @@ trait ManagesRecords
         $paramInstance->add(GetRecordsParam::sortOrder(), $sortOrder);
 
         return $this->handleRecordResponse(
-            $recordOperations->searchRecords($this->module_api_name, $paramInstance)
+            $recordOperations->searchRecords($paramInstance)
         );
     }
 
     public function searchRecordsByWord(string $word, $page = 1, $perPage = 200, $sortBy = 'id', $sortOrder = 'desc'): array
     {
-        $recordOperations = new RecordOperations();
+        $recordOperations = new RecordOperations($this->module_api_name);
         $paramInstance = new ParameterMap();
 
         $paramInstance->add(SearchRecordsParam::word(), $word);
@@ -65,13 +65,13 @@ trait ManagesRecords
         $paramInstance->add(GetRecordsParam::sortOrder(), $sortOrder);
 
         return $this->handleRecordResponse(
-            $recordOperations->searchRecords($this->module_api_name, $paramInstance)
+            $recordOperations->searchRecords($paramInstance)
         );
     }
 
     public function searchRecordsByPhone(string $phone, $page = 1, $perPage = 200, $sortBy = 'id', $sortOrder = 'desc'): array
     {
-        $recordOperations = new RecordOperations();
+        $recordOperations = new RecordOperations($this->module_api_name);
         $paramInstance = new ParameterMap();
 
         $paramInstance->add(SearchRecordsParam::phone(), $phone);
@@ -81,13 +81,13 @@ trait ManagesRecords
         $paramInstance->add(GetRecordsParam::sortOrder(), $sortOrder);
 
         return $this->handleRecordResponse(
-            $recordOperations->searchRecords($this->module_api_name, $paramInstance)
+            $recordOperations->searchRecords($paramInstance)
         );
     }
 
     public function searchRecordsByEmail(string $email, $page = 1, $perPage = 200, $sortBy = 'id', $sortOrder = 'desc'): array
     {
-        $recordOperations = new RecordOperations();
+        $recordOperations = new RecordOperations($this->module_api_name);
         $paramInstance = new ParameterMap();
 
         $paramInstance->add(SearchRecordsParam::email(), $email);
@@ -97,7 +97,7 @@ trait ManagesRecords
         $paramInstance->add(GetRecordsParam::sortOrder(), $sortOrder);
 
         return $this->handleRecordResponse(
-            $recordOperations->searchRecords($this->module_api_name, $paramInstance)
+            $recordOperations->searchRecords($paramInstance)
         );
     }
 
@@ -116,7 +116,7 @@ trait ManagesRecords
                 if ($responseHandler instanceof RecordResponseWrapper) {
                     return $responseHandler->getData();
                 } elseif ($responseHandler instanceof APIException) {
-                    logger()->error($responseHandler->getMessage()->getValue());
+                    logger()->error($responseHandler->getMessage());
                 }
             }
         }

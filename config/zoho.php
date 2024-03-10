@@ -25,7 +25,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Api's Url
+    | Api Url
     |--------------------------------------------------------------------------
     |
     | Zoho's Apis url
@@ -61,6 +61,8 @@ return [
     |
     | Which authentication flow to use
     | Zoho SDK Supports grantToken, refreshToken and accessToken
+    | You can use on of the following values:
+    | grantToken, refreshToken, accessToken
     |
     */
     'auth_flow_type' => env('ZOHO_AUTH_FLOW_TYPE', 'grantToken'),

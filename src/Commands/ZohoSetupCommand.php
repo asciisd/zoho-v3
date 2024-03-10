@@ -3,8 +3,8 @@
 namespace Asciisd\Zoho\Commands;
 
 use Asciisd\Zoho\Zoho;
-use Illuminate\Console\Command;
 use com\zoho\crm\api\exception\SDKException;
+use Illuminate\Console\Command;
 
 class ZohoSetupCommand extends Command
 {
@@ -33,14 +33,16 @@ class ZohoSetupCommand extends Command
      */
     public function handle()
     {
-        $grantToken = $this->argument('token');
+        $grantToken = $this->argument('token') ?? config('zoho.token');
 
-        if ( ! $grantToken && ! config('zoho.token')) {
+        if (!$grantToken) {
             $this->error('The Grant Token is required.');
             $this->info('generate token by visit : https://accounts.zoho.com/developerconsole');
 
             return 0;
         }
+
+        $this->info('Token: '.$grantToken);
 
         Zoho::initialize($grantToken);
 

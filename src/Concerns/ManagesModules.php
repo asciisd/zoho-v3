@@ -2,7 +2,6 @@
 
 namespace Asciisd\Zoho\Concerns;
 
-use com\zoho\crm\api\modules\Module;
 use com\zoho\crm\api\modules\APIException;
 use com\zoho\crm\api\modules\ModulesOperations;
 use com\zoho\crm\api\modules\ResponseWrapper as ModulesResponseWrapper;
@@ -16,7 +15,7 @@ trait ManagesModules
         );
     }
 
-    public function getModule(): Module
+    public function getModule()
     {
         return $this->handleModuleResponse(
             (new ModulesOperations())->getModule($this->module_api_name)
