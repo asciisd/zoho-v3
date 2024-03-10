@@ -2,13 +2,13 @@
 
 namespace Asciisd\Zoho\Concerns;
 
-use com\zoho\crm\api\ParameterMap;
-use com\zoho\crm\api\record\Record;
 use com\zoho\crm\api\modules\APIException;
+use com\zoho\crm\api\ParameterMap;
 use com\zoho\crm\api\record\GetRecordsParam;
+use com\zoho\crm\api\record\Record;
 use com\zoho\crm\api\record\RecordOperations;
-use com\zoho\crm\api\record\SearchRecordsParam;
 use com\zoho\crm\api\record\ResponseWrapper as RecordResponseWrapper;
+use com\zoho\crm\api\record\SearchRecordsParam;
 
 trait ManagesRecords
 {
@@ -37,8 +37,13 @@ trait ManagesRecords
         );
     }
 
-    public function searchRecordsByCriteria(string $criteria, $page = 1, $perPage = 200, $sortBy = 'id', $sortOrder = 'desc'): array
-    {
+    public function searchRecordsByCriteria(
+        string $criteria,
+        $page = 1,
+        $perPage = 200,
+        $sortBy = 'id',
+        $sortOrder = 'desc'
+    ): array {
         $recordOperations = new RecordOperations($this->module_api_name);
         $paramInstance = new ParameterMap();
 
@@ -53,8 +58,13 @@ trait ManagesRecords
         );
     }
 
-    public function searchRecordsByWord(string $word, $page = 1, $perPage = 200, $sortBy = 'id', $sortOrder = 'desc'): array
-    {
+    public function searchRecordsByWord(
+        string $word,
+        $page = 1,
+        $perPage = 200,
+        $sortBy = 'id',
+        $sortOrder = 'desc'
+    ): array {
         $recordOperations = new RecordOperations($this->module_api_name);
         $paramInstance = new ParameterMap();
 
@@ -69,8 +79,13 @@ trait ManagesRecords
         );
     }
 
-    public function searchRecordsByPhone(string $phone, $page = 1, $perPage = 200, $sortBy = 'id', $sortOrder = 'desc'): array
-    {
+    public function searchRecordsByPhone(
+        string $phone,
+        $page = 1,
+        $perPage = 200,
+        $sortBy = 'id',
+        $sortOrder = 'desc'
+    ): array {
         $recordOperations = new RecordOperations($this->module_api_name);
         $paramInstance = new ParameterMap();
 
@@ -85,8 +100,13 @@ trait ManagesRecords
         );
     }
 
-    public function searchRecordsByEmail(string $email, $page = 1, $perPage = 200, $sortBy = 'id', $sortOrder = 'desc'): array
-    {
+    public function searchRecordsByEmail(
+        string $email,
+        $page = 1,
+        $perPage = 200,
+        $sortBy = 'id',
+        $sortOrder = 'desc'
+    ): array {
         $recordOperations = new RecordOperations($this->module_api_name);
         $paramInstance = new ParameterMap();
 

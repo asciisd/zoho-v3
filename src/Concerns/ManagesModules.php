@@ -36,7 +36,7 @@ trait ManagesModules
             if ($responseHandler instanceof ModulesResponseWrapper) {
                 return $responseHandler->getModules();
             } elseif ($responseHandler instanceof APIException) {
-                logger()->error($responseHandler->getMessage()->getValue());
+                logger()->error($responseHandler->getMessage());
             }
         }
 

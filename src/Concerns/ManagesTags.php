@@ -2,26 +2,27 @@
 
 namespace Asciisd\Zoho\Concerns;
 
-use com\zoho\crm\api\tags\AddTagsParam;
-use com\zoho\crm\api\tags\Tag;
+use com\zoho\crm\api\exception\SDKException;
+use com\zoho\crm\api\modules\APIException;
 use com\zoho\crm\api\ParameterMap;
-use com\zoho\crm\api\tags\GetTagsParam;
+use com\zoho\crm\api\tags\AddTagsParam;
+use com\zoho\crm\api\tags\AddTagsToMultipleRecordsParam;
 use com\zoho\crm\api\tags\BodyWrapper;
+use com\zoho\crm\api\tags\ConflictWrapper;
+use com\zoho\crm\api\tags\CreateTagsParam;
+use com\zoho\crm\api\tags\GetRecordCountForTagParam;
+use com\zoho\crm\api\tags\GetTagsParam;
 use com\zoho\crm\api\tags\MergeWrapper;
+use com\zoho\crm\api\tags\RemoveTagsFromMultipleRecordsParam;
+use com\zoho\crm\api\tags\ResponseWrapper as TagResponseWrapper;
+use com\zoho\crm\api\tags\Tag;
 use com\zoho\crm\api\tags\TagsOperations;
 use com\zoho\crm\api\tags\UpdateTagParam;
 use com\zoho\crm\api\tags\UpdateTagsParam;
-use com\zoho\crm\api\modules\APIException;
-use com\zoho\crm\api\tags\ConflictWrapper;
-use com\zoho\crm\api\tags\CreateTagsParam;
-use com\zoho\crm\api\exception\SDKException;
-use com\zoho\crm\api\tags\GetRecordCountForTagParam;
-use com\zoho\crm\api\tags\AddTagsToMultipleRecordsParam;
-use com\zoho\crm\api\tags\RemoveTagsFromMultipleRecordsParam;
-use com\zoho\crm\api\tags\ResponseWrapper as TagResponseWrapper;
 
 
-trait ManagesTags {
+trait ManagesTags
+{
 
     /**
      * The method to get tags
@@ -31,7 +32,7 @@ trait ManagesTags {
     public function getTags(): array
     {
         $tagsOperations = new TagsOperations();
-        $paramInstance  = new ParameterMap();
+        $paramInstance = new ParameterMap();
         $paramInstance->add(GetTagsParam::module(), $this->module_api_name);
 
         return $this->handleTagResponse(
@@ -41,7 +42,7 @@ trait ManagesTags {
     }
 
     /**
-     * @param array $tagNames
+     * @param  array  $tagNames
      * @return array
      * @throws SDKException
      */
@@ -77,7 +78,7 @@ trait ManagesTags {
 
 
     /**
-     * @param array $tags
+     * @param  array  $tags
      * @return array
      * @throws SDKException
      */
@@ -117,7 +118,7 @@ trait ManagesTags {
     }
 
     /**
-     * @param array $tag
+     * @param  array  $tag
      * @return array
      * @throws SDKException
      */
@@ -154,7 +155,7 @@ trait ManagesTags {
     }
 
     /**
-     * @param string $id
+     * @param  string  $id
      * @return array
      */
     public function deleteTag(string $id): array
@@ -170,8 +171,8 @@ trait ManagesTags {
     }
 
     /**
-     * @param string $id
-     * @param string $conflictId
+     * @param  string  $id
+     * @param  string  $conflictId
      * @return array
      */
     public function mergeTags(string $id, string $conflictId): array
@@ -202,8 +203,8 @@ trait ManagesTags {
     }
 
     /**
-     * @param string $recordId
-     * @param array $tagNames
+     * @param  string  $recordId
+     * @param  array  $tagNames
      * @return array
      * @throws SDKException
      */
@@ -233,8 +234,8 @@ trait ManagesTags {
     }
 
     /**
-     * @param string $recordId
-     * @param array $tagNames
+     * @param  string  $recordId
+     * @param  array  $tagNames
      * @return array
      * @throws SDKException
      */
@@ -247,27 +248,26 @@ trait ManagesTags {
         //Get instance of ParameterMap Class
         $paramInstance = new ParameterMap();
 
-        foreach($tagNames as $tagName)
-        {
+        foreach ($tagNames as $tagName) {
             $paramInstance->add(RemoveTagsFromMultipleRecordsParam::ids(), $tagName);
         }
 
         //Call removeTagsFromRecord method that takes paramInstance, moduleAPIName and recordId as parameter
         return $this->handleTagResponse(
-        $tagsOperations->removeTagsFromMultipleRecords(
-            $recordId,
-            $this->module_api_name,
-            $paramInstance)
+            $tagsOperations->removeTagsFromMultipleRecords(
+                $recordId,
+                $this->module_api_name,
+                $paramInstance)
         );
     }
 
     /**
-     * @param array $recordIds
-     * @param array $tagNames
+     * @param  array  $recordIds
+     * @param  array  $tagNames
      * @return array
      * @throws SDKException
      */
-    public function addTagsToMultipleRecords( array $recordIds, array $tagNames): array
+    public function addTagsToMultipleRecords(array $recordIds, array $tagNames): array
     {
         //Get instance of TagsOperations Class
         $tagsOperations = new TagsOperations();
@@ -275,26 +275,24 @@ trait ManagesTags {
         //Get instance of ParameterMap Class
         $paramInstance = new ParameterMap();
 
-        foreach($tagNames as $tagName)
-        {
+        foreach ($tagNames as $tagName) {
             $paramInstance->add(AddTagsToMultipleRecordsParam::tagNames(), $tagName);
         }
 
-        foreach($recordIds as $recordId)
-        {
+        foreach ($recordIds as $recordId) {
             $paramInstance->add(AddTagsToMultipleRecordsParam::ids(), $recordId);
         }
 
         $paramInstance->add(AddTagsToMultipleRecordsParam::overWrite(), "false");
 
         return $this->handleTagResponse(
-            $tagsOperations->addTagsToMultipleRecords($this->module_api_name,$paramInstance)
+            $tagsOperations->addTagsToMultipleRecords($this->module_api_name, $paramInstance)
         );
     }
 
     /**
-     * @param array $recordIds
-     * @param array $tagNames
+     * @param  array  $recordIds
+     * @param  array  $tagNames
      * @return array
      * @throws SDKException
      */
@@ -306,13 +304,11 @@ trait ManagesTags {
 
         $paramInstance = new ParameterMap();
 
-        foreach($tagNames as $tagName)
-        {
+        foreach ($tagNames as $tagName) {
             $paramInstance->add(RemoveTagsFromMultipleRecordsParam::tagNames(), $tagName);
         }
 
-        foreach($recordIds as $recordId)
-        {
+        foreach ($recordIds as $recordId) {
             $paramInstance->add(RemoveTagsFromMultipleRecordsParam::ids(), $recordId);
         }
 
@@ -326,7 +322,7 @@ trait ManagesTags {
     }
 
     /**
-     * @param string $tagId
+     * @param  string  $tagId
      * @return array
      * @throws SDKException
      */
@@ -342,7 +338,7 @@ trait ManagesTags {
 
         //Call getRecordCountForTag method that takes paramInstance and tagId as parameter
         return $this->handleTagResponse(
-            $tagsOperations->getRecordCountForTag($tagId,$paramInstance)
+            $tagsOperations->getRecordCountForTag($tagId, $paramInstance)
         );
     }
 

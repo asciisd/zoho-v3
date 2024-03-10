@@ -2,13 +2,13 @@
 
 namespace Asciisd\Zoho\Traits;
 
-use Exception;
-use Illuminate\Support\Str;
+use Asciisd\Zoho\Exceptions\InvalidZohoable;
+use Asciisd\Zoho\Models\Zoho as ZohoModel;
 use Asciisd\Zoho\ZohoManager;
 use com\zoho\crm\api\record\Record;
-use Asciisd\Zoho\Models\Zoho as ZohoModel;
-use Asciisd\Zoho\Exceptions\InvalidZohoable;
+use Exception;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Str;
 
 /**
  * @property ZohoModel zoho
@@ -37,7 +37,7 @@ trait Zohoable
      */
     public function hasZohoId(): bool
     {
-        return ! is_null($this->zohoId());
+        return !is_null($this->zohoId());
     }
 
     /**
@@ -71,12 +71,12 @@ trait Zohoable
      */
     public function updateZohoId($id = null): mixed
     {
-        if ( ! $this->hasZohoId()) {
+        if (!$this->hasZohoId()) {
             throw InvalidZohoable::nonZohoable($this);
         }
 
-        if ( ! $id) {
-            if ( ! is_bool($result = $this->findByCriteria())) {
+        if (!$id) {
+            if (!is_bool($result = $this->findByCriteria())) {
                 $id = $result->getId();
             }
         }
@@ -100,8 +100,8 @@ trait Zohoable
             throw InvalidZohoable::exists($this);
         }
 
-        if ( ! $id) {
-            if ( ! is_bool($result = $this->findByCriteria())) {
+        if (!$id) {
+            if (!is_bool($result = $this->findByCriteria())) {
                 $id = $result->getId();
             }
         }
@@ -119,7 +119,7 @@ trait Zohoable
      */
     public function deleteZohoId(): mixed
     {
-        if ( ! $this->hasZohoId()) {
+        if (!$this->hasZohoId()) {
             throw InvalidZohoable::nonZohoable($this);
         }
 
@@ -178,7 +178,7 @@ trait Zohoable
      */
     public function updateZohoable(array $options = []): Record
     {
-        if ( ! $this->hasZohoId()) {
+        if (!$this->hasZohoId()) {
             throw InvalidZohoable::nonZohoable($this);
         }
 
@@ -269,7 +269,7 @@ trait Zohoable
      */
     protected function assertZohoableExists(): void
     {
-        if ( ! $this->zohoId()) {
+        if (!$this->zohoId()) {
             throw InvalidZohoable::nonZohoable($this);
         }
     }

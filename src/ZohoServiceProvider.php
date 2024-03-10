@@ -2,10 +2,10 @@
 
 namespace Asciisd\Zoho;
 
-use Spatie\LaravelPackageTools\Package;
-use Asciisd\Zoho\Commands\ZohoSetupCommand;
 use Asciisd\Zoho\Commands\ZohoAuthentication;
 use Asciisd\Zoho\Commands\ZohoInstallCommand;
+use Asciisd\Zoho\Commands\ZohoSetupCommand;
+use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class ZohoServiceProvider extends PackageServiceProvider
