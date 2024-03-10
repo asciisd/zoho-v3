@@ -23,6 +23,7 @@ your app:
    valid) and Scope Description.
 5. Your Client app would have been created and displayed by now.
 6. Select the created OAuth client.
+7. User this scope `aaaserver.profile.READ,ZohoCRM.modules.ALL,ZohoCRM.settings.ALL` when you create the grant token.
 
 ## Installation
 
