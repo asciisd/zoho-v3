@@ -22,7 +22,7 @@ class Zoho
     /**
      * The Zoho library version.
      */
-    public const VERSION = '2.1.3';
+    public const VERSION = '2.1.4';
 
     /**
      * Indicates if Zoho migrations will be run.
@@ -78,7 +78,6 @@ class Zoho
 
         $environment = self::$environment ?: self::getDataCenterEnvironment();
         $resourcePath = config('zoho.resourcePath');
-        $user = new UserSignature(config('zoho.current_user_email'));
         $token_store = new FileStore(config('zoho.token_persistence_path'));
         $logger = (new LogBuilder())->level(Levels::ALL)
             ->filePath(config('zoho.application_log_file_path'))
@@ -87,14 +86,14 @@ class Zoho
         switch (config('zoho.auth_flow_type')) {
             case 'accessToken':
                 $token = (new OAuthBuilder())
-                    ->id(config("zoho.current_user_email"))
+                    ->userSignature(new UserSignature(config('zoho.current_user_email')))
                     ->accessToken(config('zoho.token'))
                     ->build();
                 break;
 
             case 'refreshToken':
                 $token = (new OAuthBuilder())
-                    ->id(config("zoho.current_user_email"))
+                    ->userSignature(new UserSignature(config('zoho.current_user_email')))
                     ->clientId(config('zoho.client_id'))
                     ->clientSecret(config('zoho.client_secret'))
                     ->refreshToken($code ?? config('zoho.token'))
@@ -104,7 +103,7 @@ class Zoho
 
             case 'grantToken':
                 $token = (new OAuthBuilder())
-                    ->id(config("zoho.current_user_email"))
+                    ->userSignature(new UserSignature(config('zoho.current_user_email')))
                     ->clientId(config("zoho.client_id"))
                     ->clientSecret(config("zoho.client_secret"))
                     ->grantToken($code ?? config("zoho.token"))
