@@ -22,7 +22,7 @@ trait ManagesRecords
     /**
      * get the records array of given module api name
      */
-    public function getRecords($page = 1, $perPage = 200, $sortBy = 'id', $sortOrder = 'desc'): array
+    public function getRecords(array $fields = ['id'], $page = 1, $perPage = 200, $sortBy = 'id', $sortOrder = 'desc'): array
     {
         $recordOperations = new RecordOperations($this->module_api_name);
         $paramInstance = new ParameterMap();
@@ -31,6 +31,7 @@ trait ManagesRecords
         $paramInstance->add(GetRecordsParam::perPage(), $perPage);
         $paramInstance->add(GetRecordsParam::sortBy(), $sortBy);
         $paramInstance->add(GetRecordsParam::sortOrder(), $sortOrder);
+        $paramInstance->add(GetRecordsParam::fields(), implode(',', $fields));
 
         return $this->handleRecordResponse(
             $recordOperations->getRecords($paramInstance)
