@@ -74,7 +74,7 @@ class Zoho
      */
     public static function initialize($code = null): void
     {
-        dump('initializing...');
+        //dump('initializing...');
 
         $environment = self::$environment ?: self::getDataCenterEnvironment();
         $resourcePath = config('zoho.resourcePath');
