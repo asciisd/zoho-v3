@@ -5,8 +5,8 @@ namespace Asciisd\Zoho\Tests\Integration;
 use Asciisd\Zoho\ZohoManager;
 use com\zoho\crm\api\record\Leads;
 use com\zoho\crm\api\record\Record;
-use com\zoho\crm\api\modules\Module;
 use com\zoho\crm\api\record\SuccessResponse;
+use com\zoho\crm\api\webforms\Module;
 
 class ZohoModuleTest extends IntegrationTestCase
 {

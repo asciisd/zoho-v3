@@ -27,7 +27,7 @@ class ZohoManager
             $this->module_api_name = $module_api_name;
             Zoho::initialize();
         } catch (SDKException $e) {
-            //
+            logger()->error($e->getMessage());
         }
     }
 

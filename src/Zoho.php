@@ -74,6 +74,10 @@ class Zoho
      */
     public static function initialize($code = null): void
     {
+        if (self::isInitialized()) {
+            return;
+        }
+
         $environment = self::$environment ?: self::getDataCenterEnvironment();
         $resourcePath = config('zoho.resourcePath');
         $token_store = new FileStore(config('zoho.token_persistence_path'));
@@ -127,6 +131,11 @@ class Zoho
             ->resourcePath($resourcePath)
             ->logger($logger)
             ->initialize();
+    }
+
+    public static function isInitialized(): bool
+    {
+        return \com\zoho\crm\api\Initializer::getInitializer() !== null;
     }
 
     public static function getDataCenterEnvironment(): ?Environment
