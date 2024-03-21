@@ -142,6 +142,27 @@ trait Zohoable
     }
 
     /**
+	 * Create or update the Zoho record for the given model.
+	 *
+	 * @param array $options
+	 *
+	 * @return object|array
+	 * @throws InvalidZohoable
+	 */
+	public function createOrUpdateZohoable(array $options = []): object|array
+	{
+		try {
+			return $this->createAsZohoable($options);
+		} catch (InvalidZohoable $e) {
+			try {
+				return $this->updateZohoable($options);
+			} catch (InvalidZohoable $e) {
+				throw new Exception('something went wrong!');
+			}
+		}
+	}
+
+    /**
      * Create a Zoho record for the given model.
      *
      * @param  array  $options
