@@ -32,8 +32,15 @@ class ZohoInstallCommand extends Command
     public function handle()
     {
         $this->comment('Generate Zoho OAuth files ...');
-        Storage::disk('local')->put('zoho/oauth/logs/ZCRMClientLibrary.log', '');
-        Storage::disk('local')->put('zoho/oauth/tokens/zcrm_oauthtokens.txt', '');
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            // This is a server using Windows!
+            Storage::disk('local')->put('zoho\oauth\logs\ZCRMClientLibrary.log', '');
+            Storage::disk('local')->put('zoho\oauth\tokens\zcrm_oauthtokens.txt', '');
+        } else {
+            // This is a server not using Windows!'
+            Storage::disk('local')->put('zoho/oauth/logs/ZCRMClientLibrary.log', '');
+            Storage::disk('local')->put('zoho/oauth/tokens/zcrm_oauthtokens.txt', '');
+        }
 
         $this->info('Zoho scaffolding installed successfully.');
     }
