@@ -9,6 +9,7 @@ use com\zoho\crm\api\record\Record;
 use com\zoho\crm\api\record\RecordOperations;
 use com\zoho\crm\api\record\ResponseWrapper as RecordResponseWrapper;
 use com\zoho\crm\api\record\SearchRecordsParam;
+use com\zoho\crm\api\util\APIResponse;
 
 trait ManagesRecords
 {
@@ -122,11 +123,11 @@ trait ManagesRecords
         );
     }
 
-    private function handleRecordResponse($response): array
+    private function handleRecordResponse(?APIResponse $response): array
     {
         if ($response != null) {
             if (in_array($response->getStatusCode(), array(204, 304))) {
-                logger()->error($response->getStatusCode() == 204 ? "No Content" : "Not Modified");
+                logger()->error($response->getStatusCode() == 204 ? "Zoho SDK API | ManagesRecords | handleRecordResponse | No Content" : "Zoho SDK API | ManagesRecords | handleRecordResponse | Not Modified");
 
                 return [];
             }

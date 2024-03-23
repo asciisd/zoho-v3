@@ -26,7 +26,7 @@ trait ManagesModules
     {
         if ($response != null) {
             if (in_array($response->getStatusCode(), array(204, 304))) {
-                logger()->error($response->getStatusCode() == 204 ? "No Content\n" : "Not Modified\n");
+                logger()->error($response->getStatusCode() == 204 ? "Zoho SDK API | ManagesModules | handleModuleResponse | No Content\n" : "Zoho SDK API | ManagesModules | handleModuleResponse | Not Modified\n");
 
                 return [];
             }

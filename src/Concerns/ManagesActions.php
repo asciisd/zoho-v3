@@ -2,14 +2,17 @@
 
 namespace Asciisd\Zoho\Concerns;
 
-use com\zoho\crm\api\ParameterMap;
-use com\zoho\crm\api\record\Record;
-use com\zoho\crm\api\record\BodyWrapper;
+use com\zoho\crm\api\HeaderMap;
 use com\zoho\crm\api\modules\APIException;
+use com\zoho\crm\api\ParameterMap;
 use com\zoho\crm\api\record\ActionWrapper;
-use com\zoho\crm\api\record\SuccessResponse;
-use com\zoho\crm\api\record\RecordOperations;
+use com\zoho\crm\api\record\BodyWrapper;
 use com\zoho\crm\api\record\DeleteRecordsParam;
+use com\zoho\crm\api\record\Record;
+use com\zoho\crm\api\record\RecordOperations;
+use com\zoho\crm\api\record\SuccessResponse;
+use com\zoho\crm\api\util\APIResponse;
+use com\zoho\crm\api\util\Choice;
 
 trait ManagesActions
 {
@@ -17,16 +20,21 @@ trait ManagesActions
     {
         $recordOperations = new RecordOperations($this->module_api_name);
         $bodyWrapper = new BodyWrapper();
+        $records = array();
         $record = new Record();
 
         foreach ($args as $key => $value) {
             $record->addKeyValue($key, $value);
         }
 
-        $bodyWrapper->setData([$record]);
+        array_push($records, $record);
+
+        $bodyWrapper->setData($records);
+
+        $headerInstance = new HeaderMap();
 
         return $this->handleActionResponse(
-            $recordOperations->createRecords($bodyWrapper)
+            $recordOperations->createRecords($bodyWrapper, $headerInstance)
         );
     }
 
@@ -60,69 +68,38 @@ trait ManagesActions
         );
     }
 
-    public function convertLead(string $id, $data)
-    {
-
-        $recordOperations = new RecordOperations($this->module_api_name);
-        $body = new ConvertBodyWrapper();
-        $body->setData($data);
-
-        return $this->handleConvertResponse(
-            $recordOperations->convertLead($id, $body)
-        );
-    }
-
-    private function handleActionResponse($response): SuccessResponse|array
+    private function handleActionResponse(?APIResponse $response): SuccessResponse|array
     {
         if ($response != null) {
+            logger()->info("Zoho SDK API | handleActionResponse | Status Code: " . $response->getStatusCode());
             if (in_array($response->getStatusCode(), array(204, 304))) {
-                logger()->error($response->getStatusCode() == 204 ? "No Content" : "Not Modified");
+                logger()->error($response->getStatusCode() == 204 ? "Zoho SDK API | handleActionResponse | No Content" : "Zoho SDK API | handleActionResponse | Not Modified");
 
                 return [];
             }
 
             if ($response->isExpected()) {
-                $responseHandler = $response->getObject();
+                $actionHandler = $response->getObject();
 
-                if ($responseHandler instanceof ActionWrapper) {
-                    $actionResponse = $responseHandler->getData()[0];
+                if ($actionHandler instanceof ActionWrapper) {
+                    $actionWrapper = $actionHandler;
+                    $actionResponse = $actionWrapper->getData()[0];
 
                     if ($actionResponse instanceof SuccessResponse) {
                         return $actionResponse;
+                    } else {
+                        if ($actionResponse instanceof APIException) {
+                            $exception = $actionResponse;
+
+                            logger()->error("Zoho SDK API | handleActionResponse | Message : ", $exception->getMessage() instanceof Choice ? $exception->getMessage()->getValue() : $exception->getMessage());
+                        }
                     }
-                }
+                } else {
+                    if ($actionHandler instanceof APIException) {
+                        $exception = $actionHandler;
 
-                if ($responseHandler instanceof APIException) {
-                    logger()->error($responseHandler->getMessage()->getValue());
-                }
-            }
-        }
-
-        return [];
-    }
-
-    private function handleConvertResponse($response): SuccessfulConvert|array
-    {
-        if ($response != null) {
-            if (in_array($response->getStatusCode(), array(204, 304))) {
-                logger()->error($response->getStatusCode() == 204 ? "No Content" : "Not Modified");
-
-                return [];
-            }
-
-            if ($response->isExpected()) {
-                $responseHandler = $response->getObject();
-
-                if ($responseHandler instanceof ConvertActionWrapper) {
-                    $actionResponse = $responseHandler->getData()[0];
-
-                    if ($actionResponse instanceof SuccessfulConvert) {
-                        return $actionResponse;
+                        logger()->error("Zoho SDK API | handleActionResponse | Message : ", $exception->getMessage() instanceof Choice ? $exception->getMessage()->getValue() : $exception->getMessage());
                     }
-                }
-
-                if ($responseHandler instanceof APIException) {
-                    logger()->error($responseHandler->getMessage()->getValue());
                 }
             }
         }
