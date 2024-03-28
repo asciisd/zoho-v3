@@ -2,10 +2,9 @@
 
 namespace Asciisd\Zoho\Exceptions;
 
-use Exception;
 use Illuminate\Database\Eloquent\Model;
 
-class InvalidZohoable extends Exception
+class InvalidZohoable extends \Exception
 {
     /**
      * Create a new InvalidTapCustomer instance.
@@ -14,7 +13,7 @@ class InvalidZohoable extends Exception
      *
      * @return static
      */
-    public static function nonZohoable($owner)
+    public static function nonZohoable(Model $owner): static
     {
         return new static(class_basename($owner).' is not a Zohoable. See the createAsZohoable method.');
     }
@@ -26,7 +25,7 @@ class InvalidZohoable extends Exception
      *
      * @return static
      */
-    public static function exists($owner)
+    public static function exists(Model $owner): static
     {
         return new static(class_basename($owner)." is already a Zohoable with ID {$owner->zohoId()}");
     }

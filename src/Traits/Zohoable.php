@@ -6,7 +6,7 @@ use Asciisd\Zoho\Exceptions\InvalidZohoable;
 use Asciisd\Zoho\Models\Zoho as ZohoModel;
 use Asciisd\Zoho\ZohoManager;
 use com\zoho\crm\api\record\Record;
-use Exception;
+use com\zoho\crm\api\record\SuccessResponse;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Str;
 
@@ -46,19 +46,26 @@ trait Zohoable
      * @param  null  $id
      *
      * @return mixed
-     * @throws Exception
      */
     public function createOrUpdateZohoId($id = null): mixed
     {
         try {
             return $this->createZohoId($id);
         } catch (InvalidZohoable $e) {
+            $message = $e->getMessage();
+
+            logger()->error("Zoho Api | Zohoable Trait | createOrUpdateZohoId | createZohoId | Message: $message");
+
             try {
                 return $this->updateZohoId($id);
             } catch (InvalidZohoable $e) {
-                throw new Exception('something went wrong!');
+                $message = $e->getMessage();
+
+                logger()->error("Zoho Api | Zohoable Trait | createOrUpdateZohoId | updateZohoId | Message: $message");
             }
         }
+
+        return [];
     }
 
     /**
@@ -81,7 +88,9 @@ trait Zohoable
             }
         }
 
-        $this->zoho()->update(['zoho_id' => $id]);
+        if ($id) {
+            $this->zoho()->update(['zoho_id' => $id]);
+        }
 
         return $this->load('zoho');
     }
@@ -96,17 +105,24 @@ trait Zohoable
      */
     public function createZohoId($id = null): mixed
     {
+        // If the model already has a Zoho ID, we will just return the instance
         if ($this->hasZohoId()) {
             throw InvalidZohoable::exists($this);
         }
 
+        // If the $id is not provided, we will try to find the record by the search criteria
         if (!$id) {
-            if (!is_bool($result = $this->findByCriteria())) {
+            $result = $this->findByCriteria();
+
+            if ($result) {
                 $id = $result->getId();
             }
         }
 
-        $this->zoho()->create(['zoho_id' => $id]);
+        // Sometimes even the search doesn't return any result, so we will create a new record only if the $id is not null
+        if ($id) {
+            $this->zoho()->create(['zoho_id' => $id]);
+        }
 
         return $this->load('zoho');
     }
@@ -142,25 +158,28 @@ trait Zohoable
     }
 
     /**
-	 * Create or update the Zoho record for the given model.
-	 *
-	 * @param array $options
-	 *
-	 * @return object|array
-	 * @throws InvalidZohoable
-	 */
-	public function createOrUpdateZohoable(array $options = []): object|array
-	{
-		try {
-			return $this->createAsZohoable($options);
-		} catch (InvalidZohoable $e) {
-			try {
-				return $this->updateZohoable($options);
-			} catch (InvalidZohoable $e) {
-				throw new Exception('something went wrong!');
-			}
-		}
-	}
+     * Create or update the Zoho record for the given model.
+     *
+     * @param  array  $options
+     *
+     * @return object|array
+     */
+    public function createOrUpdateZohoable(array $options = []): object|array
+    {
+        try {
+            if ($this->zohoId()) {
+                return $this->updateZohoable($options);
+            } else {
+                return $this->createAsZohoable($options);
+            }
+        } catch (InvalidZohoable $e) {
+            $message = $e->getMessage();
+
+            logger()->error("Zoho Api | Zohoable Trait | createOrUpdateZohoable | Message: $message");
+        }
+
+        return [];
+    }
 
     /**
      * Create a Zoho record for the given model.
@@ -181,12 +200,14 @@ trait Zohoable
         // Here we will create the Record instance on Zoho and store the ID of the
         // record from Zoho. This ID will correspond with the Zoho record instance
         // and allow us to retrieve records from Zoho later when we need to work.
-        $records = $this->zoho_module->create($options);
+        $response = $this->zoho_module->create($options);
 
-        $this->createZohoId($records->getDetails()['id']);
+        foreach ($response as $record) {
+            /** @var SuccessResponse $record */
+            $this->createZohoId($record->getDetails()['id']);
+        }
 
-
-        return $records;
+        return $response;
     }
 
     /**

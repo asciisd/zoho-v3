@@ -7,8 +7,9 @@ use com\zoho\crm\api\ParameterMap;
 use com\zoho\crm\api\record\GetRecordsParam;
 use com\zoho\crm\api\record\Record;
 use com\zoho\crm\api\record\RecordOperations;
-use com\zoho\crm\api\record\ResponseWrapper as RecordResponseWrapper;
+use com\zoho\crm\api\record\ResponseWrapper;
 use com\zoho\crm\api\record\SearchRecordsParam;
+use com\zoho\crm\api\record\SuccessResponse;
 use com\zoho\crm\api\util\APIResponse;
 
 trait ManagesRecords
@@ -125,24 +126,44 @@ trait ManagesRecords
 
     private function handleRecordResponse(?APIResponse $response): array
     {
-        if ($response != null) {
-            if (in_array($response->getStatusCode(), array(204, 304))) {
-                logger()->error($response->getStatusCode() == 204 ? "Zoho SDK API | ManagesRecords | handleRecordResponse | No Content" : "Zoho SDK API | ManagesRecords | handleRecordResponse | Not Modified");
-
-                return [];
-            }
-
+        if ($response) {
             if ($response->isExpected()) {
-                $responseHandler = $response->getObject();
+                $actionHandler = $response->getObject();
 
-                if ($responseHandler instanceof RecordResponseWrapper) {
-                    return $responseHandler->getData();
-                } elseif ($responseHandler instanceof APIException) {
-                    logger()->error($responseHandler->getMessage());
+                if ($actionHandler instanceof ResponseWrapper) {
+                    $actionWrapper = $actionHandler;
+
+                    $actionResponse = $actionWrapper->getData();
+
+                    $result = [];
+                    foreach ($actionResponse as $response) {
+                        if ($response instanceof Record) {
+                            $result[] = $response;
+                        } else {
+                            if ($response instanceof APIException) {
+                                $this->handleRecordException($response);
+                            }
+                        }
+                    }
+
+                    return $result;
+                } else {
+                    if ($actionHandler instanceof APIException) {
+                        $this->handleRecordException($actionHandler);
+                    }
                 }
             }
         }
 
         return [];
+    }
+
+    private function handleRecordException(APIException $exception): void
+    {
+        $message = $exception->getMessage();
+        $details = json_encode($exception->getDetails());
+        $status = $exception->getStatus()->getValue();
+
+        logger()->error("Zoho SDK API | ManagesRecords | handleRecordResponse | Status: $status | Message: $message | Details : $details");
     }
 }

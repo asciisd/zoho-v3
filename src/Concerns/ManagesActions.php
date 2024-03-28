@@ -3,9 +3,9 @@
 namespace Asciisd\Zoho\Concerns;
 
 use com\zoho\crm\api\HeaderMap;
-use com\zoho\crm\api\modules\APIException;
 use com\zoho\crm\api\ParameterMap;
 use com\zoho\crm\api\record\ActionWrapper;
+use com\zoho\crm\api\record\APIException;
 use com\zoho\crm\api\record\BodyWrapper;
 use com\zoho\crm\api\record\DeleteRecordsParam;
 use com\zoho\crm\api\record\Record;
@@ -70,40 +70,44 @@ trait ManagesActions
 
     private function handleActionResponse(?APIResponse $response): SuccessResponse|array
     {
-        if ($response != null) {
-            logger()->info("Zoho SDK API | handleActionResponse | Status Code: " . $response->getStatusCode());
-            if (in_array($response->getStatusCode(), array(204, 304))) {
-                logger()->error($response->getStatusCode() == 204 ? "Zoho SDK API | handleActionResponse | No Content" : "Zoho SDK API | handleActionResponse | Not Modified");
-
-                return [];
-            }
-
+        if ($response) {
             if ($response->isExpected()) {
                 $actionHandler = $response->getObject();
 
                 if ($actionHandler instanceof ActionWrapper) {
                     $actionWrapper = $actionHandler;
-                    $actionResponse = $actionWrapper->getData()[0];
 
-                    if ($actionResponse instanceof SuccessResponse) {
-                        return $actionResponse;
-                    } else {
-                        if ($actionResponse instanceof APIException) {
-                            $exception = $actionResponse;
+                    $actionResponse = $actionWrapper->getData();
 
-                            logger()->error("Zoho SDK API | handleActionResponse | Message : ", $exception->getMessage() instanceof Choice ? $exception->getMessage()->getValue() : $exception->getMessage());
+                    $result = [];
+                    foreach ($actionResponse as $response) {
+                        if ($response instanceof SuccessResponse) {
+                            $result[] = $response;
+                        } else {
+                            if ($response instanceof APIException) {
+                                $this->handleException($response);
+                            }
                         }
                     }
+
+                    return $result;
                 } else {
                     if ($actionHandler instanceof APIException) {
-                        $exception = $actionHandler;
-
-                        logger()->error("Zoho SDK API | handleActionResponse | Message : ", $exception->getMessage() instanceof Choice ? $exception->getMessage()->getValue() : $exception->getMessage());
+                        $this->handleException($actionHandler);
                     }
                 }
             }
         }
 
         return [];
+    }
+
+    private function handleException(APIException $exception): void
+    {
+        $message = $exception->getMessage()->getValue();
+        $details = json_encode($exception->getDetails());
+        $status = $exception->getStatus()->getValue();
+
+        logger()->error("Zoho SDK API | handleActionResponse | Status: $status | Message: $message | Details : $details");
     }
 }
