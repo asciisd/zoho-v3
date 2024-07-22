@@ -14,6 +14,7 @@ use com\zoho\crm\api\dc\INDataCenter;
 use com\zoho\crm\api\dc\USDataCenter;
 use com\zoho\crm\api\exception\SDKException;
 use com\zoho\crm\api\InitializeBuilder;
+use com\zoho\crm\api\Initializer;
 use com\zoho\crm\api\SDKConfigBuilder;
 use com\zoho\crm\api\UserSignature;
 
@@ -33,6 +34,8 @@ class Zoho
      * Indicates if Zoho routes will be registered.
      */
     public static bool $registersRoutes = true;
+    
+    public static string $token = '';
 
     /**
      * Indicates if Zoho routes will be registered.
@@ -131,6 +134,12 @@ class Zoho
             ->resourcePath($resourcePath)
             ->logger($logger)
             ->initialize();
+
+        static::$token = Initializer::getInitializer()->getToken()->getAccessToken();
+    }
+
+    public static function getToken(): string {
+        return static::$token;
     }
 
     public static function isInitialized(): bool
