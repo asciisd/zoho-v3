@@ -2,9 +2,10 @@
 
 namespace Asciisd\Zoho\Exceptions;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 
-class InvalidZohoable extends \Exception
+class InvalidZohoable extends Exception
 {
     /**
      * Create a new InvalidTapCustomer instance.

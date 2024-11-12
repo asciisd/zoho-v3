@@ -9,7 +9,6 @@ use com\zoho\crm\api\record\Record;
 use com\zoho\crm\api\record\RecordOperations;
 use com\zoho\crm\api\record\ResponseWrapper;
 use com\zoho\crm\api\record\SearchRecordsParam;
-use com\zoho\crm\api\record\SuccessResponse;
 use com\zoho\crm\api\util\APIResponse;
 
 trait ManagesRecords
@@ -21,11 +20,59 @@ trait ManagesRecords
         )[0];
     }
 
+    private function handleRecordResponse(?APIResponse $response): array
+    {
+        if ($response) {
+            if ($response->isExpected()) {
+                $actionHandler = $response->getObject();
+
+                if ($actionHandler instanceof ResponseWrapper) {
+                    $actionWrapper = $actionHandler;
+
+                    $actionResponse = $actionWrapper->getData();
+
+                    $result = [];
+                    foreach ($actionResponse as $response) {
+                        if ($response instanceof Record) {
+                            $result[] = $response;
+                        } else {
+                            if ($response instanceof APIException) {
+                                $this->handleRecordException($response);
+                            }
+                        }
+                    }
+
+                    return $result;
+                } else {
+                    if ($actionHandler instanceof APIException) {
+                        $this->handleRecordException($actionHandler);
+                    }
+                }
+            }
+        }
+
+        return [];
+    }
+
+    private function handleRecordException(APIException $exception): void
+    {
+        $message = $exception->getMessage();
+        $details = json_encode($exception->getDetails());
+        $status = $exception->getStatus()->getValue();
+
+        logger()->error("Zoho SDK API | ManagesRecords | handleRecordResponse | Status: $status | Message: $message | Details : $details");
+    }
+
     /**
      * get the records array of given module api name
      */
-    public function getRecords(array $fields = ['id'], $page = 1, $perPage = 200, $sortBy = 'id', $sortOrder = 'desc'): array
-    {
+    public function getRecords(
+        array $fields = ['id'],
+        $page = 1,
+        $perPage = 200,
+        $sortBy = 'id',
+        $sortOrder = 'desc'
+    ): array {
         $recordOperations = new RecordOperations($this->module_api_name);
         $paramInstance = new ParameterMap();
 
@@ -122,48 +169,5 @@ trait ManagesRecords
         return $this->handleRecordResponse(
             $recordOperations->searchRecords($paramInstance)
         );
-    }
-
-    private function handleRecordResponse(?APIResponse $response): array
-    {
-        if ($response) {
-            if ($response->isExpected()) {
-                $actionHandler = $response->getObject();
-
-                if ($actionHandler instanceof ResponseWrapper) {
-                    $actionWrapper = $actionHandler;
-
-                    $actionResponse = $actionWrapper->getData();
-
-                    $result = [];
-                    foreach ($actionResponse as $response) {
-                        if ($response instanceof Record) {
-                            $result[] = $response;
-                        } else {
-                            if ($response instanceof APIException) {
-                                $this->handleRecordException($response);
-                            }
-                        }
-                    }
-
-                    return $result;
-                } else {
-                    if ($actionHandler instanceof APIException) {
-                        $this->handleRecordException($actionHandler);
-                    }
-                }
-            }
-        }
-
-        return [];
-    }
-
-    private function handleRecordException(APIException $exception): void
-    {
-        $message = $exception->getMessage();
-        $details = json_encode($exception->getDetails());
-        $status = $exception->getStatus()->getValue();
-
-        logger()->error("Zoho SDK API | ManagesRecords | handleRecordResponse | Status: $status | Message: $message | Details : $details");
     }
 }

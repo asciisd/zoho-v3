@@ -15,13 +15,6 @@ trait ManagesModules
         );
     }
 
-    public function getModule()
-    {
-        return $this->handleModuleResponse(
-            (new ModulesOperations())->getModule($this->module_api_name)
-        )[0];
-    }
-
     private function handleModuleResponse($response): array
     {
         if ($response != null) {
@@ -41,5 +34,12 @@ trait ManagesModules
         }
 
         return [];
+    }
+
+    public function getModule()
+    {
+        return $this->handleModuleResponse(
+            (new ModulesOperations())->getModule($this->module_api_name)
+        )[0];
     }
 }

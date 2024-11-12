@@ -14,6 +14,7 @@ use com\zoho\crm\api\dc\INDataCenter;
 use com\zoho\crm\api\dc\USDataCenter;
 use com\zoho\crm\api\exception\SDKException;
 use com\zoho\crm\api\InitializeBuilder;
+use com\zoho\crm\api\Initializer;
 use com\zoho\crm\api\SDKConfigBuilder;
 use com\zoho\crm\api\UserSignature;
 
@@ -22,7 +23,7 @@ class Zoho
     /**
      * The Zoho library version.
      */
-    public const VERSION = '2.2.0';
+    public const VERSION = '3.0.0';
 
     /**
      * Indicates if Zoho migrations will be run.
@@ -135,7 +136,7 @@ class Zoho
 
     public static function isInitialized(): bool
     {
-        return \com\zoho\crm\api\Initializer::getInitializer() !== null;
+        return Initializer::getInitializer() !== null;
     }
 
     public static function getDataCenterEnvironment(): ?Environment

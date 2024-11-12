@@ -1,7 +1,12 @@
 {
     "name": "asciisd/zoho-v3",
     "description": "Laravel Zoho API V3 Package",
-    "keywords": ["asciisd", "laravel", "zoho", "crm"],
+    "keywords": [
+        "asciisd",
+        "laravel",
+        "zoho",
+        "crm"
+    ],
     "homepage": "https://github.com/asciisd/zoho-v3",
     "license": "MIT",
     "authors": [
@@ -12,14 +17,14 @@
         }
     ],
     "require": {
-        "php": "^8.1|^8.2",
-        "illuminate/contracts": "^9.0|^10.0",
+        "php": "^8.2|^8.3",
         "spatie/laravel-package-tools": "^1.14.2",
         "zohocrm/php-sdk-6.0": "^1.0"
     },
     "require-dev": {
         "nunomaduro/collision": "^6.0",
-        "orchestra/testbench": "^7.0",
+        "laravel/framework": "^10.0|^11.0",
+        "orchestra/testbench": "^8.18|^9.0",
         "phpunit/phpunit": "^9.5|^10.0"
     },
     "autoload": {
@@ -33,16 +38,6 @@
             "Asciisd\\Zoho\\Tests\\": "tests"
         }
     },
-    "scripts": {
-        "analysis": "vendor/bin/phpstan analyse",
-        "test": "vendor/bin/phpunit -c ./phpunit.xml --colors=always"
-    },
-    "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "pestphp/pest-plugin": false
-        }
-    },
     "extra": {
         "laravel": {
             "providers": [
@@ -51,6 +46,12 @@
             "aliases": {
                 "Zoho": "Asciisd\\Zoho\\Facades\\Zoho"
             }
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": false
         }
     },
     "minimum-stability": "stable",

@@ -31,13 +31,13 @@ class ZohoManager
         }
     }
 
-    public static function useModule(string $module_name = 'Leads'): static
-    {
-        return new static($module_name);
-    }
-
     public static function make(string $module_name = 'Leads'): static
     {
         return static::useModule($module_name);
+    }
+
+    public static function useModule(string $module_name = 'Leads'): static
+    {
+        return new static($module_name);
     }
 }

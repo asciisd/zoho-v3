@@ -12,7 +12,6 @@ use com\zoho\crm\api\record\Record;
 use com\zoho\crm\api\record\RecordOperations;
 use com\zoho\crm\api\record\SuccessResponse;
 use com\zoho\crm\api\util\APIResponse;
-use com\zoho\crm\api\util\Choice;
 
 trait ManagesActions
 {
@@ -35,36 +34,6 @@ trait ManagesActions
 
         return $this->handleActionResponse(
             $recordOperations->createRecords($bodyWrapper, $headerInstance)
-        );
-    }
-
-    public function update(Record $record): SuccessResponse|array
-    {
-        $recordOperations = new RecordOperations($this->module_api_name);
-        $request = new BodyWrapper();
-        $request->setData([$record]);
-
-        return $this->handleActionResponse(
-            $recordOperations->updateRecords($request)
-        );
-    }
-
-    public function deleteRecord(string $record_id): SuccessResponse|array
-    {
-        return $this->delete([$record_id]);
-    }
-
-    public function delete(array $recordIds): SuccessResponse|array
-    {
-        $recordOperations = new RecordOperations($this->module_api_name);
-        $paramInstance = new ParameterMap();
-
-        foreach ($recordIds as $id) {
-            $paramInstance->add(DeleteRecordsParam::ids(), $id);
-        }
-
-        return $this->handleActionResponse(
-            $recordOperations->deleteRecords($paramInstance)
         );
     }
 
@@ -109,5 +78,35 @@ trait ManagesActions
         $status = $exception->getStatus()->getValue();
 
         logger()->error("Zoho SDK API | handleActionResponse | Status: $status | Message: $message | Details : $details");
+    }
+
+    public function update(Record $record): SuccessResponse|array
+    {
+        $recordOperations = new RecordOperations($this->module_api_name);
+        $request = new BodyWrapper();
+        $request->setData([$record]);
+
+        return $this->handleActionResponse(
+            $recordOperations->updateRecords($request)
+        );
+    }
+
+    public function deleteRecord(string $record_id): SuccessResponse|array
+    {
+        return $this->delete([$record_id]);
+    }
+
+    public function delete(array $recordIds): SuccessResponse|array
+    {
+        $recordOperations = new RecordOperations($this->module_api_name);
+        $paramInstance = new ParameterMap();
+
+        foreach ($recordIds as $id) {
+            $paramInstance->add(DeleteRecordsParam::ids(), $id);
+        }
+
+        return $this->handleActionResponse(
+            $recordOperations->deleteRecords($paramInstance)
+        );
     }
 }

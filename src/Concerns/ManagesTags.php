@@ -41,6 +41,31 @@ trait ManagesTags
 
     }
 
+    private function handleTagResponse($response): array
+    {
+        if ($response !== null) {
+            if (in_array($response->getStatusCode(), array(204, 304), true)) {
+                logger()->error($response->getStatusCode() === 204 ? "No Content" : "Not Modified");
+
+                return [];
+            }
+
+            if ($response->isExpected()) {
+                $responseHandler = $response->getObject();
+
+                if ($responseHandler instanceof TagResponseWrapper) {
+                    return $responseHandler->getTags();
+                }
+
+                if ($responseHandler instanceof APIException) {
+                    logger()->error($responseHandler->getMessage());
+                }
+            }
+        }
+
+        return [];
+    }
+
     /**
      * @param  array  $tagNames
      * @return array
@@ -75,7 +100,6 @@ trait ManagesTags
             $tagsOperations->createTags($request, $paramInstance)
         );
     }
-
 
     /**
      * @param  array  $tags
@@ -234,34 +258,6 @@ trait ManagesTags
     }
 
     /**
-     * @param  string  $recordId
-     * @param  array  $tagNames
-     * @return array
-     * @throws SDKException
-     */
-    public function removeTagsFromRecord(string $recordId, array $tagNames): array
-    {
-
-        //Get instance of TagsOperations Class
-        $tagsOperations = new TagsOperations();
-
-        //Get instance of ParameterMap Class
-        $paramInstance = new ParameterMap();
-
-        foreach ($tagNames as $tagName) {
-            $paramInstance->add(RemoveTagsFromMultipleRecordsParam::ids(), $tagName);
-        }
-
-        //Call removeTagsFromRecord method that takes paramInstance, moduleAPIName and recordId as parameter
-        return $this->handleTagResponse(
-            $tagsOperations->removeTagsFromMultipleRecords(
-                $recordId,
-                $this->module_api_name,
-                $paramInstance)
-        );
-    }
-
-    /**
      * @param  array  $recordIds
      * @param  array  $tagNames
      * @return array
@@ -287,6 +283,34 @@ trait ManagesTags
 
         return $this->handleTagResponse(
             $tagsOperations->addTagsToMultipleRecords($this->module_api_name, $paramInstance)
+        );
+    }
+
+    /**
+     * @param  string  $recordId
+     * @param  array  $tagNames
+     * @return array
+     * @throws SDKException
+     */
+    public function removeTagsFromRecord(string $recordId, array $tagNames): array
+    {
+
+        //Get instance of TagsOperations Class
+        $tagsOperations = new TagsOperations();
+
+        //Get instance of ParameterMap Class
+        $paramInstance = new ParameterMap();
+
+        foreach ($tagNames as $tagName) {
+            $paramInstance->add(RemoveTagsFromMultipleRecordsParam::ids(), $tagName);
+        }
+
+        //Call removeTagsFromRecord method that takes paramInstance, moduleAPIName and recordId as parameter
+        return $this->handleTagResponse(
+            $tagsOperations->removeTagsFromMultipleRecords(
+                $recordId,
+                $this->module_api_name,
+                $paramInstance)
         );
     }
 
@@ -340,30 +364,5 @@ trait ManagesTags
         return $this->handleTagResponse(
             $tagsOperations->getRecordCountForTag($tagId, $paramInstance)
         );
-    }
-
-    private function handleTagResponse($response): array
-    {
-        if ($response !== null) {
-            if (in_array($response->getStatusCode(), array(204, 304), true)) {
-                logger()->error($response->getStatusCode() === 204 ? "No Content" : "Not Modified");
-
-                return [];
-            }
-
-            if ($response->isExpected()) {
-                $responseHandler = $response->getObject();
-
-                if ($responseHandler instanceof TagResponseWrapper) {
-                    return $responseHandler->getTags();
-                }
-
-                if ($responseHandler instanceof APIException) {
-                    logger()->error($responseHandler->getMessage());
-                }
-            }
-        }
-
-        return [];
     }
 }
