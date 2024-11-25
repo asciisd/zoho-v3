@@ -79,6 +79,23 @@ class Zoho
             return;
         }
 
+        //Don't initialize if the zoho.token_persistence_path file does not exist
+        if (!file_exists(config('zoho.token_persistence_path'))) {
+            logger()->warning('Zoho token persistence path does not exist, you can run `php artisan zoho:install` to create it.');
+            return;
+        }
+
+        //Don't initialize if the zoho.token_persistence_path file is empty
+        if (filesize(config('zoho.token_persistence_path')) === 0) {
+            logger()->warning('Zoho token persistence path is empty, you can run `php artisan zoho:authentication` generate token.');
+            return;
+        }
+
+        //Don't initialize if the zoho.token_persistence_path file has only one line
+        if (count(file(config('zoho.token_persistence_path'))) === 1) {
+            return;
+        }
+
         $environment = self::$environment ?: self::getDataCenterEnvironment();
         $resourcePath = config('zoho.resourcePath');
         $token_store = new FileStore(config('zoho.token_persistence_path'));
