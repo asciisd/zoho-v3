@@ -13,17 +13,27 @@ This package used to integrate with the new Zoho V3 Api CRM
 
 ## Registering a Zoho Client
 
-Since Zoho CRM APIs are authenticated with OAuth2 standards, you should register your client app with Zoho. To register
-your app:
+Since Zoho CRM APIs are authenticated with OAuth2 standards, you must register your client app with Zoho. Follow these steps to register your app:
 
-1. Visit this page [https://api-console.zoho.com/](https://api-console.zoho.com)
+1. Visit the [Zoho API Console](https://api-console.zoho.com/).
 2. Click on `ADD CLIENT`.
 3. Choose a `Self Client`.
-4. Create grant token by providing the necessary scopes, time duration (the duration for which the generated token is
-   valid) and Scope Description.
-5. Your Client app would have been created and displayed by now.
+4. Create a grant token by providing the necessary **scopes**, time duration (the duration for which the generated token is valid), and a Scope Description. 
+   - For detailed information about available scopes, refer to the [Zoho CRM Scopes Documentation](https://www.zoho.com/crm/developer/docs/api/v3/scopes.html).
+5. Your client app will now be created and displayed.
 6. Select the created OAuth client.
-7. User this scope `aaaserver.profile.READ,ZohoCRM.modules.ALL,ZohoCRM.settings.ALL` when you create the grant token.
+
+### Examnple Scope Configuration
+
+To enable all required settings and operations for Zoho CRM, use the following scope:
+
+```
+ZohoCRM.users.ALL,ZohoCRM.org.ALL,ZohoCRM.settings.ALL,ZohoCRM.modules.ALL,ZohoCRM.bulk.ALL,ZohoCRM.notifications.READ,ZohoCRM.notifications.CREATE,ZohoCRM.notifications.UPDATE,ZohoCRM.notifications.DELETE,ZohoCRM.coql.READ
+```
+
+**Warning:** 
+Using such comprehensive scopes grants extensive permissions to the client. Ensure this is only done for trusted and secure applications. Review your application's use cases and adhere to the principle of least privilege to mitigate potential risks.
+
 
 ## Installation
 
